@@ -24,6 +24,15 @@ var myHeaders = {
 var urlt = $text.base64Decode("aHR0cHM6Ly9qaWVrb3UuYXBpc2FwaXMueHl6OjE4ODgvYXBpL3ZpZGVvL2xpc3Q/dmVyc2lvbj0xLjEuMQ==");
 var urlt2 = "https://jiekou.apisapis.xyz:1888/api/video/play?version=1.1.1";
 
+var CryptoJS = require("crypto-js");
+                
+                // 定义密钥和IV
+                var secretKey = 'f5d965df75336270';
+                var iv = '97b60394abc2fbe1';
+                
+                // 将密钥和IV转换为CryptoJS词对象
+                var key = CryptoJS.enc.Utf8.parse(secretKey);
+                var iv = CryptoJS.enc.Utf8.parse(iv);
 
 
 // 调用ui模块的render方法来渲染界面
@@ -31,7 +40,7 @@ function jiemian() {
 $ui.render({
     props: {
         // 设置页面标题
-        title: "👨‍💻暗网禁区1.0"
+        title: "👨‍💻暗网禁区2.0"
     },
     views: [
         // 创建一个输入框视图
@@ -157,75 +166,114 @@ var obj = channelList[sender.index].category_id;
                      $http.post({
                               url:urlt,
                               header: myHeaders,
-                              body:{"page":page,...type,"limit":20,"platform_id":"18"},
+                              body:{"page":page,...type,"limit":8,"platform_id":"18"},
                              handler: function (resp) {
                                  $ui.loading(false);
                                                              var li = resp.data.data.list;
-                                                             for (var i = 0; i < li.length; i++) {
-                                                                 var dli = li[i];
-                                                                 
-                                $("Video").insert({
-                                    indexPath: $indexPath(0, $("Video").data.length),
-                                    value: {
-                                        img: {
-                                            src: dli.image
-                                        },
-                                        pm: {
-                                            text: dli.title
-                                        },
-                                        url: dli.video_id
-                                    }
-                                })
-                            }
-
-                        }
-                    })
-
-                }
-
-            }
-        }]
-});
-}
-
+                                                                                                                          var promises = li.map(dli => new Promise((resolve, reject) => {
+                                                                                                                            $http.get({
+                                                                                                                              url: dli.image,
+                                                                                                                              handler: function(resp) {
+                                                                                                                                if (resp.error) {
+                                                                                                                                  reject(resp.error);
+                                                                                                                                } else {
+                                                                                                                                  var base64Data = $text.base64Encode(resp.data);
+                                                                                                                                  var imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
+                                                                                                                                  var data = {
+                                                                                                                                    img: {
+                                                                                                                                      src: "data:image/png;base64," + imagebase
+                                                                                                                                    },
+                                                                                                                                    pm: {
+                                                                                                                                      text: dli.title
+                                                                                                                                    },
+                                                                                                                                    url: dli.video_id
+                                                                                                                                  };
+                                                                                                                                  resolve(data);
+                                                                                                                                }
+                                                                                                                              }
+                                                                                                                            });
+                                                                                                                          }));
+                                                                                                                          
+                                                                                                                          Promise.all(promises)
+                                                                                                                            .then(data => {
+                                                                                                                              data.forEach((item) => {
+                                                                                                                                $("Video").insert({
+                                                                                                                                  indexPath: $indexPath(0, $("Video").data.length),
+                                                                                                                                  value: item
+                                                                                                                                });
+                                                                                                                              });
+                                                                                                                            })
+                                                                                                                            .catch(err => {
+                                                                                                                              console.error(err);
+                                                                                                                            });
+//                                                                                                 
+                                                                                                                         }
+                                                                                                                     })
+                                                                                                 
+//
+                                                                                                                                                                                                                                  }
+//                                                                                                 
+                                                                                                             }
+                                                                                                         }]
+                                                                                                 });
+                                                                                                 }
 
 function getdata() {
-    var typeStr = $cache.get("type");
-    var type = JSON.parse(typeStr);
-    
-    $ui.loading(true);
-    $http.post({
-         url:urlt,
-         header: myHeaders,
-         body:{"page":1,...type,"limit":20,"platform_id":"18"},
-        handler: function (resp) {
-            $ui.loading(false);
-            var li = resp.data.data.list;
-            
-            
-            var data = [];
-            
-            for (var i = 0; i < li.length; i++) {
-                dli = li[i];
-              
-                
-                data.push({
-                    img: {
-                            src: dli.image
-                        },
-                        pm: {
-                            text: dli.title
-                        },
-                        url: dli.video_id
-                })
-                
+  var typeStr = $cache.get("type");
+  var type = JSON.parse(typeStr);
+  $ui.loading(true);
+  $http.post({
+    url: urlt,
+    header: myHeaders,
+    body: {
+      "page": 1,
+      ...type,
+      "limit": 8,
+      "platform_id": "18"
+    },
+    handler: function(resp) {
+      $ui.loading(false);
+      var li = resp.data.data.list;
+      var promises = li.map(dli => new Promise((resolve, reject) => {
+        $http.get({
+          url: dli.image,
+          handler: function(resp) {
+            if (resp.error) {
+              reject(resp.error);
+            } else {
+              var base64Data = $text.base64Encode(resp.data);
+              var imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
+              var data = {
+                img: {
+                  src: "data:image/png;base64," + imagebase
+                },
+                pm: {
+                  text: dli.title
+                },
+                url: dli.video_id
+              };
+              resolve(data);
             }
-            $("Video").data = data;
-            //console.log($("Video").data);
-            $("Video").endRefreshing()
-        }
-    });
+          }
+        });
+      }));
+
+      Promise.all(promises)
+        .then(data => {
+          $("Video").data = data;
+          //console.log($("Video").data);
+          $("Video").endRefreshing();
+        })
+        .catch(err => {
+          console.error(err);
+          $("Video").endRefreshing();
+        });
+    }
+  });
 }
+
+
+
 
 function geturl(url, pm) {
     $ui.loading(true);
@@ -270,13 +318,13 @@ var output = {"category_id": obj };
                                        $cache.set("type",channelLists);
 
 $cache.set("pg", 1);
-getdata();
 jiemian();
+getdata();
 //第一次运行弹窗提示
 if (!$cache.get("alertShown")) {
   $ui.alert({
     title: "温馨提示😀",
-    message: "•修复一些bug✅\n•新增自动更新功能✅\n•作者:中车大神🔥",
+    message: ">因视频封面使用加密手段可能会加载慢情况‼️\n•本次更新新增封面✅\n•修复一些bug✅\n•新增自动更新功能✅\n•作者:中车大神🔥",
     actions: [
       {
         title: "知道了",
@@ -287,6 +335,7 @@ if (!$cache.get("alertShown")) {
     ]
   });
 }
+
 
 function I(r) {
     var n = "";
@@ -305,12 +354,12 @@ function search(query) {
   
   getdata();
 }
+
 //自动更新
 async function get_updata() {
-    const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5
-NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEuanM="));
+    const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "1.1") {
+        if (resp.data.version != "2.0") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
