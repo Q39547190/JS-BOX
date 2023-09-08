@@ -196,51 +196,58 @@ var obj = channelList[sender.index].category_id;
 async function getdata() {
   try {
     var platform_id = $cache.get("platform_id", platform_id);
+    var image_type = $cache.get("image_type");
     var page = $cache.get("pg")
-    console.log("页数"+page);
+    console.log("页数" + page);
     var typeStr = $cache.get("type");
     var type = JSON.parse(typeStr);
     $ui.loading(true);
-    let resp = await $http.post({
-      url: urlt,
+    let resp = await $http.post({ 
+      url: urlt, 
       header: myHeaders,
       body: {
-        "page": page,
-        ...type,
-        "limit": 4,
+        "page": page, 
+        ...type, 
+        "limit": 4, 
         "platform_id": platform_id
       }
     });
     $ui.loading(false);
+    
     let li = resp.data.data.list;
     let promises = li.map(async (dli) => {
       let resp = await $http.get({ url: dli.image });
+      
       if (resp.error) {
         throw resp.error;
       } else {
-        let base64Data = $text.base64Encode(resp.data);
-        let imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
-        let data = { img: { src: "data:image/png;base64," + imagebase }, pm: { text: dli.title }, url: dli.video_id };
+        let data;
+        // 根据image_type的值来决定是否需要进行解密
+        if (image_type == 0) {
+          data = { img: { src: dli.image }, pm: { text: dli.title }, url: dli.video_id };
+        } else {
+          let base64Data = $text.base64Encode(resp.data);
+          let imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
+          data = { img: { src: "data:image/png;base64," + imagebase }, pm: { text: dli.title }, url: dli.video_id };
+        }
         return data;
       }
     });
+    
     Promise.all(promises).then(data => {
       for (let i = 0; i < data.length; i++) {
-              $("Video").insert({
-                indexPath: $indexPath(0, $("Video").data.length),
-                value: data[i]
-              });
-            }
-      //console.log("getdata");
-      $("Video").endRefreshing();
+        $("Video").insert({ indexPath: $indexPath(0, $("Video").data.length), value: data[i] })
+      }
+      $("Video").endRefreshing()
     }).catch(err => {
       console.error(err);
-      $("Video").endRefreshing();
-    });
+      $("Video").endRefreshing()
+    })
   } catch (err) {
-    console.error(err);
+    console.error(err)
   }
 }
+
 
 
 
@@ -282,7 +289,7 @@ function play(url, mc) {
 if (!$cache.get("alertShown")) {
   $ui.alert({
     title: "温馨提示😀",
-    message: "新增app:\n私房KTV🚗\n海角社区🚗\n91视频🚗\n聚合app上线✅\n------------\n•作者:中车大神🔥",
+    message: "新增app:\n11款软件🚗\n聚合app上线✅\n------------\n•作者:中车大神🔥",
     actions: [
       {
         title: "知道了",
@@ -331,7 +338,7 @@ async function shuaxin() {
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "3.1") {
+        if (resp.data.version != "3.5") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
@@ -452,6 +459,8 @@ let matrix = {
       $cache.set("platform_id", platform_id);
       let appname = applist[indexPath.item].name;
       $cache.set("appname", appname);
+      let image_type = applist[indexPath.item].image_type;
+            $cache.set("image_type", image_type);
       
       //启动app请求
       async function main() {
