@@ -1,6 +1,24 @@
 {
   "applist" : [
       {
+        "platform_id" : "1",
+        "pic_url" : "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-3cf3ff86-055f-448a-a6d3-20be75077f0c/01af35cc-01a3-4b2b-9f53-2d57c430a6ac.png",
+        "name" : "香蕉视频",
+        "image_type" : "0"
+      },
+      {
+        "platform_id" : "4",
+        "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/25ea1d1b-ab55-49dd-8002-a69377b84b3b.png",
+        "name" : "草莓视频",
+        "image_type" : "0"
+      },
+      {
+        "platform_id" : "21",
+        "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/74962aa4-387b-435c-b3c4-6c0ed13e1e88.png",
+        "name" : "飞技视频",
+        "image_type" : "0"
+      },
+      {
         "platform_id" : "19",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/096c46ee-9f0c-4927-be8d-cd2bc29a82ae.png",
         "name" : "私房KTV",
@@ -25,9 +43,27 @@
         "image_type" : "2"
       },
       {
-        "platform_id" : "1",
-        "pic_url" : "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-3cf3ff86-055f-448a-a6d3-20be75077f0c/01af35cc-01a3-4b2b-9f53-2d57c430a6ac.png",
-        "name" : "香蕉视频",
+        "platform_id" : "13",
+        "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/22a77cc8-b898-4735-9026-f9fd319973fa.png",
+        "name" : "爱爱影院",
+        "image_type" : "0"
+      },
+      {
+        "platform_id" : "9",
+        "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/d43322da-8aae-499c-a4a1-01dca616d347.png",
+        "name" : "吉星視頻",
+        "image_type" : "0"
+      },
+      {
+        "platform_id" : "8",
+        "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/db870af7-359f-4722-83d5-6f27144398b1.png",
+        "name" : "XYOUB视频",
+        "image_type" : "0"
+      },
+      {
+        "platform_id" : "7",
+        "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/064b5a0c-100c-4a7d-b22a-3498dc6a7b09.png",
+        "name" : "十里桃花",
         "image_type" : "0"
       }
     ]
