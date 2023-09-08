@@ -1,5 +1,5 @@
 /*
-2023年9月6日更新
+2023年9月8日更新
 
 
 
@@ -96,7 +96,10 @@ var obj = channelList[sender.index].category_id;
                     // 将页面数pg设置为1，存入缓存
                  $cache.set("pg",1);
                     // 调用getdata函数
-                    getdata();
+                    $("Video").data = []; // 清空 "Video" 矩阵的数据
+//加载自动刷新函数                 
+                                        shuaxin();
+//                                        
                 }
             }
         },
@@ -149,129 +152,70 @@ var obj = channelList[sender.index].category_id;
                     sender.endFetchingMore();
                     var page = $cache.get("pg") + 1;
                     $cache.set("pg", page);
+                    
     var typeStr = $cache.get("type");
     var type = JSON.parse(typeStr);
                      console.log("搜索内容:"+type)
-                    
+//加载自动刷新函数                 
+                                        shuaxin();
                     $ui.loading(true);
 
-  // 创建一个名为 bodyObj 的对象，该对象包含你想要在请求体中发送的一些基本属性
-  //var bodyObj = { "page": page, "limit": 20, "platform_id": "18" };
-  
-  // 使用 Object.assign() 方法将 type 对象的所有属性复制（或合并）到 bodyObj 对象中。
-  // 结果赋值给 requestBody，它将包含 bodyObj 和 type 的所有属性
-  //var requestBody = Object.assign(bodyObj, type);
                                            
                       
-                     $http.post({
-                              url:urlt,
-                              header: myHeaders,
-                              body:{"page":page,...type,"limit":8,"platform_id":"18"},
-                             handler: function (resp) {
-                                 $ui.loading(false);
-                                                             var li = resp.data.data.list;
-                                                                                                                          var promises = li.map(dli => new Promise((resolve, reject) => {
-                                                                                                                            $http.get({
-                                                                                                                              url: dli.image,
-                                                                                                                              handler: function(resp) {
-                                                                                                                                if (resp.error) {
-                                                                                                                                  reject(resp.error);
-                                                                                                                                } else {
-                                                                                                                                  var base64Data = $text.base64Encode(resp.data);
-                                                                                                                                  var imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
-                                                                                                                                  var data = {
-                                                                                                                                    img: {
-                                                                                                                                      src: "data:image/png;base64," + imagebase
-                                                                                                                                    },
-                                                                                                                                    pm: {
-                                                                                                                                      text: dli.title
-                                                                                                                                    },
-                                                                                                                                    url: dli.video_id
-                                                                                                                                  };
-                                                                                                                                  resolve(data);
-                                                                                                                                }
-                                                                                                                              }
-                                                                                                                            });
-                                                                                                                          }));
-                                                                                                                          
-                                                                                                                          Promise.all(promises)
-                                                                                                                            .then(data => {
-                                                                                                                              data.forEach((item) => {
-                                                                                                                                $("Video").insert({
-                                                                                                                                  indexPath: $indexPath(0, $("Video").data.length),
-                                                                                                                                  value: item
-                                                                                                                                });
-                                                                                                                              });
-                                                                                                                            })
-                                                                                                                            .catch(err => {
-                                                                                                                              console.error(err);
-                                                                                                                            });
-//                                                                                                 
-                                                                                                                         }
-                                                                                                                     })
-                                                                                                 
-//
-                                                                                                                                                                                                                                  }
+                                                                                                                                                                                                                                                     }
 //                                                                                                 
                                                                                                              }
                                                                                                          }]
                                                                                                  });
                                                                                                  }
 
-function getdata() {
-  var typeStr = $cache.get("type");
-  var type = JSON.parse(typeStr);
-  $ui.loading(true);
-  $http.post({
-    url: urlt,
-    header: myHeaders,
-    body: {
-      "page": 1,
-      ...type,
-      "limit": 8,
-      "platform_id": "18"
-    },
-    handler: function(resp) {
-      $ui.loading(false);
-      var li = resp.data.data.list;
-      var promises = li.map(dli => new Promise((resolve, reject) => {
-        $http.get({
-          url: dli.image,
-          handler: function(resp) {
-            if (resp.error) {
-              reject(resp.error);
-            } else {
-              var base64Data = $text.base64Encode(resp.data);
-              var imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
-              var data = {
-                img: {
-                  src: "data:image/png;base64," + imagebase
-                },
-                pm: {
-                  text: dli.title
-                },
-                url: dli.video_id
-              };
-              resolve(data);
-            }
-          }
+async function getdata() {
+  try {
+    var page = $cache.get("pg")
+    console.log("页数"+page);
+    var typeStr = $cache.get("type");
+    var type = JSON.parse(typeStr);
+    $ui.loading(true);
+    let resp = await $http.post({
+      url: urlt,
+      header: myHeaders,
+      body: {
+        "page": page,
+        ...type,
+        "limit": 2,
+        "platform_id": "18"
+      }
+    });
+    $ui.loading(false);
+    let li = resp.data.data.list;
+    let promises = li.map(async (dli) => {
+      let resp = await $http.get({ url: dli.image });
+      if (resp.error) {
+        throw resp.error;
+      } else {
+        let base64Data = $text.base64Encode(resp.data);
+        let imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
+        let data = { img: { src: "data:image/png;base64," + imagebase }, pm: { text: dli.title }, url: dli.video_id };
+        return data;
+      }
+    });
+    Promise.all(promises).then(data => {
+      for (let i = 0; i < data.length; i++) {
+        $("Video").insert({
+          indexPath: $indexPath(0, $("Video").data.length),
+          value: data[i]
         });
-      }));
-
-      Promise.all(promises)
-        .then(data => {
-          $("Video").data = data;
-          //console.log($("Video").data);
-          $("Video").endRefreshing();
-        })
-        .catch(err => {
-          console.error(err);
-          $("Video").endRefreshing();
-        });
-    }
-  });
+      }
+      console.log("getdata");
+      $("Video").endRefreshing();
+    }).catch(err => {
+      console.error(err);
+      $("Video").endRefreshing();
+    });
+  } catch (err) {
+    console.error(err);
+  }
 }
-
 
 
 
@@ -319,12 +263,13 @@ var output = {"category_id": obj };
 
 $cache.set("pg", 1);
 jiemian();
-getdata();
+//加载自动刷新函数                 
+                                        shuaxin();
 //第一次运行弹窗提示
 if (!$cache.get("alertShown")) {
   $ui.alert({
     title: "温馨提示😀",
-    message: ">因视频封面使用加密手段可能会加载慢情况‼️\n•本次更新新增封面✅\n•修复一些bug✅\n•新增自动更新功能✅\n•作者:中车大神🔥",
+    message: ">因视频封面使用加密手段可能会加载慢情况‼️(问题已经解决✅)\n•修复一些bug✅\n•优化加载速度✅\n•作者:中车大神🔥",
     actions: [
       {
         title: "知道了",
@@ -351,15 +296,25 @@ function search(query) {
   var channelLists = JSON.stringify(output);
   $cache.set("type", channelLists);
   $cache.set("pg",1);
-  
-  getdata();
+  $("Video").data = []; // 清空 "Video" 矩阵的数据
+  //加载自动刷新函数                 
+                                          shuaxin();
 }
+
+  //自动刷新函数
+async function shuaxin() {
+                                          for (let i = 0; i < 5; i++) {
+                                            await getdata();
+                                            var page = $cache.get("pg") + 1;
+                                                                $cache.set("pg", page);
+                                          }
+                                        }
 
 //自动更新
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "2.0") {
+        if (resp.data.version != "2.5") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
