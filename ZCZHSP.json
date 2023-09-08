@@ -23,6 +23,12 @@
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/fcefefa0-6289-4925-aee9-096c0bd13a53.png",
         "name" : "91视频",
         "image_type" : "2"
+      },
+      {
+        "platform_id" : "4",
+        "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/25ea1d1b-ab55-49dd-8002-a69377b84b3b.png",
+        "name" : "草莓视频",
+        "image_type" : "0"
       }
     ]
 }
