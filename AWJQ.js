@@ -7,11 +7,6 @@ by：中车大神🚄
 */
 
 
-// 声明一个数组channelList，包含6个对象，每个对象有一个名称和一个ID
-var channelList = [
-    {"category_id":"765","title":"全部分类"},{"category_id":"668","title":"热门"},{"category_id":"669","title":"校园霸凌"},{"category_id":"670","title":"迷奸强奸"},{"category_id":"671","title":"暗网萝莉"},{"category_id":"672","title":"人兽重口"},{"category_id":"673","title":"摄像破解"},{"category_id":"674","title":"真实破处"},{"category_id":"675","title":"多人群P"},{"category_id":"676","title":"黑料吃瓜"},{"category_id":"677","title":"色情综艺"},{"category_id":"678","title":"公共性爱"},{"category_id":"679","title":"AI换脸"},{"category_id":"680","title":"港台三级"},{"category_id":"681","title":"SM调教"},{"category_id":"682","title":"人妖男同"},{"category_id":"683","title":"偷情奸情"},{"category_id":"684","title":"偷欢黑人"},{"category_id":"685","title":"夫妻交换"},{"category_id":"686","title":"母子父女"},{"category_id":"687","title":"绿奴绿帽"},{"category_id":"688","title":"小姨嫂子"},{"category_id":"689","title":"兄妹姐弟"},{"category_id":"690","title":"真实抓奸"},{"category_id":"691","title":"淫荡孕妇"},{"category_id":"692","title":"淫乱情侣"},{"category_id":"693","title":"儿媳岳母"},{"category_id":"694","title":"国产精品"},{"category_id":"695","title":"家庭乱伦"},{"category_id":"696","title":"师生畸恋"},{"category_id":"697","title":"素质单男"},{"category_id":"698","title":"网红主播"},{"category_id":"699","title":"颜值美女"},{"category_id":"700","title":"精品探花"},{"category_id":"701","title":"原创自拍"},{"category_id":"702","title":"自慰喷水"},{"category_id":"703","title":"百合女同"},{"category_id":"704","title":"网黄精选"},{"category_id":"705","title":"偷窥偷拍"},{"category_id":"706","title":"国产最新"},{"category_id":"707","title":"直播大秀"},{"category_id":"708","title":"勾引搭讪"},{"category_id":"709","title":"按摩会所"},{"category_id":"710","title":"熟女少妇"},{"category_id":"711","title":"车震野战"},{"category_id":"712","title":"户外露出"},{"category_id":"713","title":"韩国主播"},{"category_id":"714","title":"麻豆传媒"},{"category_id":"715","title":"91制片厂"},{"category_id":"716","title":"果冻传媒"},{"category_id":"717","title":"精东影业"},{"category_id":"718","title":"天美传媒"},{"category_id":"719","title":"皇家华人"},{"category_id":"720","title":"其它传媒"},{"category_id":"721","title":"台湾JVID"},{"category_id":"722","title":"台湾SWAG"},{"category_id":"723","title":"兔子先生"},{"category_id":"724","title":"SA国际传媒"},{"category_id":"725","title":"杏吧传媒"},{"category_id":"726","title":"星空无限"},{"category_id":"727","title":"糖心Vlog"},{"category_id":"728","title":"扣扣传媒"},{"category_id":"729","title":"素人约拍"},{"category_id":"730","title":"无码FC2"},{"category_id":"731","title":"无码一本道"},{"category_id":"732","title":"无码东京热"},{"category_id":"733","title":"中文字幕"},{"category_id":"734","title":"多P群交"},{"category_id":"735","title":"母女双飞"},{"category_id":"736","title":"按摩SPA"},{"category_id":"737","title":"出轨侵犯"},{"category_id":"738","title":"丝袜制服"},{"category_id":"739","title":"时间静止"},{"category_id":"740","title":"强奸轮奸"},{"category_id":"741","title":"潮吹放尿"},{"category_id":"742","title":"巨根黑人"},{"category_id":"743","title":"有码新作"},{"category_id":"744","title":"无码流出"},{"category_id":"745","title":"欧美剧情"},{"category_id":"746","title":"4"},{"category_id":"747","title":"H动漫"},{"category_id":"748","title":"剧场番剧"},{"category_id":"749","title":"3D动画"},{"category_id":"750","title":"同人COS"},{"category_id":"751","title":"角色扮演"},{"category_id":"752","title":"次元女神"},{"category_id":"753","title":"漫改作品"},{"category_id":"754","title":"黑丝白丝"},{"category_id":"755","title":"蕾丝网袜"},{"category_id":"756","title":"口交足交"},{"category_id":"757","title":"JK"},{"category_id":"758","title":"OL"},{"category_id":"759","title":"空姐"},{"category_id":"760","title":"护士"},{"category_id":"761","title":"旗袍"},{"category_id":"762","title":"女仆"},{"category_id":"763","title":"学生装"},{"category_id":"764","title":"泳衣"}
-];
-
 // 声明一个对象myHeaders，包含一个User-Agent字段，用于在HTTP请求中标识客户端信息
 var myHeaders = {
     "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1",
@@ -22,7 +17,9 @@ var myHeaders = {
 
 // 使用$text模块的base64Decode方法解码字符串，将结果赋值给urlt变量
 var urlt = $text.base64Decode("aHR0cHM6Ly9qaWVrb3UuYXBpc2FwaXMueHl6OjE4ODgvYXBpL3ZpZGVvL2xpc3Q/dmVyc2lvbj0xLjEuMQ==");
-var urlt2 = "https://jiekou.apisapis.xyz:1888/api/video/play?version=1.1.1";
+var urlt2 = $text.base64Decode("aHR0cHM6Ly9qaWVrb3UuYXBpc2FwaXMueHl6OjE4ODgvYXBpL3ZpZGVvL3BsYXk/dmVyc2lvbj0xLjEuMQ==");
+
+
 
 var CryptoJS = require("crypto-js");
                 
@@ -33,14 +30,40 @@ var CryptoJS = require("crypto-js");
                 // 将密钥和IV转换为CryptoJS词对象
                 var key = CryptoJS.enc.Utf8.parse(secretKey);
                 var iv = CryptoJS.enc.Utf8.parse(iv);
+                
+                
+//请求app
+function appdata() {
+  return new Promise((resolve, reject) => {
+    var platform_id = $cache.get("platform_id");
+    $http.post({
+      url:urlt,
+      header: myHeaders,
+      body:{"page":1,"limit":1,"platform_id":platform_id},
+      handler: function (resp) {
+        $ui.loading(false);
+        if (resp.error) {
+          reject(resp.error);
+        } else {
+          var  channelList = resp.data.data.video_category;
+          $cache.set("channelList",channelList);
+          //console.log(channelList);
+          resolve(channelList);
+        }
+      }
+    });
+  });
+}             
 
 
 // 调用ui模块的render方法来渲染界面
 function jiemian() {
-$ui.render({
+  var channelList = $cache.get("channelList")
+  var appname = $cache.get("appname");
+$ui.push({
     props: {
         // 设置页面标题
-        title: "👨‍💻暗网禁区2.5"
+        title: appname
     },
     views: [
         // 创建一个输入框视图
@@ -146,6 +169,7 @@ var obj = channelList[sender.index].category_id;
             },
             events: {
                 didSelect: function (sender, indexPath, data) {
+                  
                     geturl(data.url, data.pm.text)
                 },
                 didReachBottom: function (sender) {
@@ -153,11 +177,11 @@ var obj = channelList[sender.index].category_id;
                     var page = $cache.get("pg") + 1;
                     $cache.set("pg", page);
                     
-    var typeStr = $cache.get("type");
-    var type = JSON.parse(typeStr);
-                     console.log("搜索内容:"+type)
-//加载自动刷新函数                 
-                                        shuaxin();
+//加载自动刷新函数
+  shuaxin();
+
+                               
+                                        
                     $ui.loading(true);
 
                                            
@@ -171,6 +195,7 @@ var obj = channelList[sender.index].category_id;
 
 async function getdata() {
   try {
+    var platform_id = $cache.get("platform_id", platform_id);
     var page = $cache.get("pg")
     console.log("页数"+page);
     var typeStr = $cache.get("type");
@@ -183,7 +208,7 @@ async function getdata() {
         "page": page,
         ...type,
         "limit": 2,
-        "platform_id": "18"
+        "platform_id": platform_id
       }
     });
     $ui.loading(false);
@@ -201,12 +226,12 @@ async function getdata() {
     });
     Promise.all(promises).then(data => {
       for (let i = 0; i < data.length; i++) {
-        $("Video").insert({
-          indexPath: $indexPath(0, $("Video").data.length),
-          value: data[i]
-        });
-      }
-      console.log("getdata");
+              $("Video").insert({
+                indexPath: $indexPath(0, $("Video").data.length),
+                value: data[i]
+              });
+            }
+      //console.log("getdata");
       $("Video").endRefreshing();
     }).catch(err => {
       console.error(err);
@@ -252,24 +277,12 @@ function play(url, mc) {
     })
 }
 
-var obj = channelList[0].category_id;
 
-var output = {"category_id": obj };
-                 
-                    
- var channelLists = JSON.stringify(output);
-
-                                       $cache.set("type",channelLists);
-
-$cache.set("pg", 1);
-jiemian();
-//加载自动刷新函数                 
-                                        shuaxin();
 //第一次运行弹窗提示
 if (!$cache.get("alertShown")) {
   $ui.alert({
     title: "温馨提示😀",
-    message: ">因视频封面使用加密手段可能会加载慢情况‼️(问题已经解决✅)\n•修复一些bug✅\n•优化加载速度✅\n•作者:中车大神🔥",
+    message: "新增app:\n私房KTV🚗\n海角社区🚗\n91视频🚗\n聚合app上线✅\n------------\n•作者:中车大神🔥",
     actions: [
       {
         title: "知道了",
@@ -282,11 +295,7 @@ if (!$cache.get("alertShown")) {
 }
 
 
-function I(r) {
-    var n = "";
-    for (i = 0; i < r.length; ++i) n += String.fromCharCode(128 ^ r.charCodeAt(i));
-    return n
-}
+
 
 
 function search(query) {
@@ -302,19 +311,27 @@ function search(query) {
 }
 
   //自动刷新函数
+
 async function shuaxin() {
-                                          for (let i = 0; i < 5; i++) {
-                                            await getdata();
-                                            var page = $cache.get("pg") + 1;
-                                                                $cache.set("pg", page);
-                                          }
-                                        }
+  for (let i = 0; i < 6; i++) {
+    let videoView = $("Video");
+    //防止多次下滑秒退报错
+    if (!videoView) {
+      console.log('找不到界面2');
+      break;
+    }
+    await getdata();
+    var page = $cache.get("pg") + 1;
+    $cache.set("pg", page);
+  }
+}
+
 
 //自动更新
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "2.5") {
+        if (resp.data.version != "3.0") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
@@ -364,3 +381,106 @@ function download(url,name) {
         }
     })
 }
+
+//分割线***************
+//启动界面
+function getapplist(){
+$http.get({
+             url:"https://ghproxy.com/https://raw.githubusercontent.com/Q39547190/JS-BOX/main/ZCZHSP.json",
+            handler: function (resp) {
+                var applist = resp.data.applist;
+                $cache.set("applist", applist);
+  }
+  })
+  }
+ getapplist();
+var  applist = $cache.get("applist");
+ 
+ 
+
+
+
+
+
+
+const IMAGE_SIZE = $device.info.screen.width / 5;
+const LABEL_HEIGHT = 20;
+const GAP = 10;
+
+let matrix = {
+  type: "matrix",
+  props: {
+    columns: 5,
+    itemHeight: IMAGE_SIZE + LABEL_HEIGHT,
+    spacing: GAP,
+    square: false,
+    template: [{
+      type: "image",
+      props: {
+        id: "image",
+        contentMode: $contentMode.scaleAspectFit,
+      },
+      layout: (make, view) => {
+        make.centerX.equalTo(view.super);
+        make.top.inset(GAP);
+        make.size.equalTo($size(IMAGE_SIZE - 2 * GAP, IMAGE_SIZE - 2 * GAP));
+      },
+    }, {
+      type: "label",
+      props: {
+        id: "label",
+        align: $align.center,
+      },
+      layout: (make, view) => {
+        make.centerX.equalTo(view.super);
+        make.top.equalTo(view.prev.bottom);
+        make.width.equalTo(view.super);
+        make.height.equalTo(LABEL_HEIGHT);
+      },
+    }],
+    data: applist.map(item => {
+      return {
+        image: { src: item.pic_url },
+        label: { text: item.name },
+      };
+    }),
+  },
+  layout: $layout.fill,
+  events: {
+    didSelect: (sender, indexPath, data) => {
+      let platform_id = applist[indexPath.item].platform_id;
+      $cache.set("platform_id", platform_id);
+      let appname = applist[indexPath.item].name;
+      $cache.set("appname", appname);
+      
+      //启动app请求
+      async function main() {
+        try {
+          var channelList = await appdata();
+          // 启动视频界面
+          var obj = channelList[0].category_id;
+          var output = {"category_id": obj };
+          var channelLists = JSON.stringify(output);
+          $cache.set("type",channelLists);
+          $cache.set("pg", 1);
+          jiemian();
+          //加载自动刷新函数                 
+          shuaxin();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      
+      main();
+      //                                  
+    },
+  },
+};
+
+$ui.render({
+  props: {
+    title: "中车聚合盒子🚄(持续更新中...)"
+  },
+  views: [matrix]
+});
+
