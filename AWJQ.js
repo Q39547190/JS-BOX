@@ -207,7 +207,7 @@ async function getdata() {
       body: {
         "page": page,
         ...type,
-        "limit": 2,
+        "limit": 4,
         "platform_id": platform_id
       }
     });
@@ -313,7 +313,7 @@ function search(query) {
   //自动刷新函数
 
 async function shuaxin() {
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 3; i++) {
     let videoView = $("Video");
     //防止多次下滑秒退报错
     if (!videoView) {
@@ -331,7 +331,7 @@ async function shuaxin() {
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "3.0") {
+        if (resp.data.version != "3.1") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
