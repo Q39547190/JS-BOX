@@ -65,6 +65,18 @@
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/064b5a0c-100c-4a7d-b22a-3498dc6a7b09.png",
         "name" : "十里桃花",
         "image_type" : "0"
+      },
+      {
+        "platform_id" : "11",
+        "pic_url" : "http://h5.kdes.autos/img/c3d90622-d0db-47c2-9fc7-c4e0ae4aed1d.png",
+        "name" : "麻豆综合",
+        "image_type" : "0"
+      },
+      {
+        "platform_id" : "12",
+        "pic_url" : "http://h5.kdes.autos/img/d0eb2ad5-50e3-4ec1-b970-4c30ab94293b.png",
+        "name" : "华人AV",
+        "image_type" : "0"
       }
     ]
 }
