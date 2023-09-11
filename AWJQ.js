@@ -200,13 +200,13 @@ var obj = channelList[sender.index].category_id;
               // 获取已保存的数据
                 let savedData = $cache.get("shoucang") || [];
                 
-                // 添加新的数据到数组
-                savedData.push(data);
+                // 添加新的数据到数组的前端
+                savedData.unshift(data);
                 
                 // 保存数据
                 $cache.set("shoucang", savedData);
                 
-                $ui.toast("收藏成功");
+                $ui.toast("收藏成功✅");
         }
     }
 },
@@ -284,7 +284,19 @@ function shoucangJM(){
         didSelect: function(sender, indexPath, data) {
           // Handle item selection
           geturl(data.url, data.pm.text)
-        }
+        },
+        didLongPress: function(sender, indexPath, data) {
+          //JSON.stringify` 方法将每个项和 `data` 转换为 JSON 字符串对比删除包含data数据
+                      let savedData = $cache.get("shoucang") || [];
+                      savedData = savedData.filter(item => JSON.stringify(item) !== JSON.stringify(data));
+                      $cache.set("shoucang", savedData);
+                        
+                      
+           //刷新收藏夹             
+          
+          $ui.toast("收藏删除成功❌");
+          $("matrix").data = savedData;
+                }
       }
     }
   ]
@@ -424,7 +436,7 @@ async function shuaxin() {
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "4.5") {
+        if (resp.data.version != "4.6") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
