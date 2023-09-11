@@ -1,5 +1,5 @@
 /*
-2023年9月8日更新
+2023年9月11日更新
 
 
 
@@ -128,125 +128,204 @@ var obj = channelList[sender.index].category_id;
         },
         // ...
             
-      
-      {
-            type: "matrix",
-            props: {
-                id: "Video",
-                itemHeight: 180,
-                columns: 2,
-                spacing: 7,
-                template: [{
-                    type: "image",
-                    props: {
-                        id: "img",
-                        radius: 3
-                    },
-                    layout: function (make, view) {
-                        make.centerX.equalTo(view.super);
-                        make.height.equalTo(90);
-                        make.width.equalTo(180);
-                    }
+      //...
+{
+    type: "matrix",
+    props: {
+        id: "Video",
+        itemHeight: 180,
+        columns: 2,
+        spacing: 7,
+        template: [
+            {
+                type: "image",
+                props: {
+                    id: "img",
+                    radius: 3
                 },
-                {
-                    type: "label",
-                    props: {
-                        id: "pm",
-                        align: $align.center,
-                        lines: 0,
-                        font: $font("bold", 15)
-                    },
-                    layout: function (make, view) {
-                        make.top.equalTo($("img").bottom).offset(10);
-                        make.right.left.inset(0)
-                    }
-                },
-                ]
+                layout: function(make, view) {
+                    make.centerX.equalTo(view.super);
+                    make.height.equalTo(90);
+                    make.width.equalTo(180);
+                }
             },
-            layout: function (make) {
-                make.top.equalTo($("menu").bottom);
-                make.bottom.left.right.inset(0)
+//...
+
+//...            
+            {
+                type: "label",
+                props: {
+                    id: "pm",
+                    align: $align.center,
+                    lines: 0,
+                    font: $font("bold", 15)
+                },
+                layout: function(make, view) {
+                    make.top.equalTo($("img").bottom).offset(10);
+                    make.right.left.inset(0);
+                }
+            }
+        ]
+    },
+    layout: function(make) {
+        make.top.equalTo($("menu").bottom);
+        make.bottom.left.right.inset(0);
+    },
+    events: {
+        didSelect: function(sender, indexPath, data) {
+            geturl(data.url, data.pm.text);
+        },
+        didReachBottom: function(sender) {
+            sender.endFetchingMore();
+            var page = $cache.get("pg") + 1;
+            $cache.set("pg", page);
+            shuaxin();
+            $ui.loading(true);
+        },
+        didLongPress: function(sender, indexPath, data) {
+              // 获取已保存的数据
+                let savedData = $cache.get("shoucang") || [];
+                
+                // 添加新的数据到数组
+                savedData.push(data);
+                
+                // 保存数据
+                $cache.set("shoucang", savedData);
+                
+                $ui.toast("收藏成功");
+        }
+    }
+},
+//...
+
+{
+            type: "button",
+            props: {
+                id: "hb_img",
+                src: "https://icon-icons.com/downloadimage.php?id=79718&root=1128/ICO/512/&file=1486164750-love08_79718.ico",
             },
             events: {
-                didSelect: function (sender, indexPath, data) {
-                  
-                    geturl(data.url, data.pm.text)
-                },
-                didReachBottom: function (sender) {
-                    sender.endFetchingMore();
-                    var page = $cache.get("pg") + 1;
-                    $cache.set("pg", page);
-                    
-//加载自动刷新函数
-  shuaxin();
-
-                               
-                                        
-                    $ui.loading(true);
-
-                                           
-                      
-                                                                                                                                                                                                                                                     }
-//                                                                                                 
-                                                                                                             }
-                                                                                                         }]
+                tapped: function (sender) {
+              shoucangJM();      
+                }
+            },
+            layout: function (make, view) {
+                make.bottom.inset(30)
+                make.width.height.equalTo(60)
+                make.right.inset(15)
+                //shoucangJM();
+            }
+        }
+                                                                                                                                                                                                                                                                                                                                                                                                                                    
+//...
+                                                                                                         ]
                                                                                                  });
                                                                                                  }
+                                                                                                 
+//收藏夹视图
+function shoucangJM(){
+
+ $ui.push({
+  props: {
+    title: "收藏夹"
+  },
+  views: [
+    {
+      type: "matrix",
+      props: {
+        id: "matrix",
+        itemHeight: 180,
+        columns: 2,
+        spacing: 7,
+        template: [
+          {
+            type: "image",
+            props: {
+              id: "img",
+              radius: 3
+            },
+            layout: function(make, view) {
+              make.centerX.equalTo(view.super);
+              make.height.equalTo(90);
+              make.width.equalTo(180);
+            }
+          },
+          {
+            type: "label",
+            props: {
+              id: "pm",
+              align: $align.center,
+              lines: 0,
+              font: $font("bold", 15)
+            },
+            layout: function(make, view) {
+              make.top.equalTo($("img").bottom).offset(10);
+              make.right.left.inset(0);
+            }
+          }
+        ]
+      },
+      layout: $layout.fill,
+      events: {
+        didSelect: function(sender, indexPath, data) {
+          // Handle item selection
+          geturl(data.url, data.pm.text)
+        }
+      }
+    }
+  ]
+});
+  var shoucang = $cache.get("shoucang");
+  
+  $("matrix").data = shoucang;
+  //console.log("收藏" + JSON.stringify(shoucang));
+
+}
+
+                                                                                                                                                                        
+                                                                                                 
 
 async function getdata() {
   try {
     var platform_id = $cache.get("platform_id", platform_id);
     var image_type = $cache.get("image_type");
-    var page = $cache.get("pg")
+    var page = $cache.get("pg");
     console.log("页数" + page);
     var typeStr = $cache.get("type");
     var type = JSON.parse(typeStr);
     $ui.loading(true);
-    let resp = await $http.post({ 
-      url: urlt, 
+    let resp = await $http.post({
+      url: urlt,
       header: myHeaders,
-      body: {
-        "page": page, 
-        ...type, 
-        "limit": 4, 
-        "platform_id": platform_id
-      }
+      body: { "page": page, ...type, "limit": 16, "platform_id": platform_id }
     });
     $ui.loading(false);
-    
     let li = resp.data.data.list;
-    let promises = li.map(async (dli) => {
-      let resp = await $http.get({ url: dli.image });
-      
-      if (resp.error) {
-        throw resp.error;
-      } else {
-        let data;
-        // 根据image_type的值来决定是否需要进行解密
-        if (image_type == 0) {
-          data = { img: { src: dli.image }, pm: { text: dli.title }, url: dli.video_id };
+    for (let dli of li) {
+      $http.get({ url: dli.image }).then(async (resp) => {
+        if (resp.error) {
+          throw resp.error;
         } else {
-          let base64Data = $text.base64Encode(resp.data);
-          let imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
-          data = { img: { src: "data:image/png;base64," + imagebase }, pm: { text: dli.title }, url: dli.video_id };
+          let data;
+          if (image_type == 0) {
+            data = { img: { src: dli.image }, pm: { text: dli.title }, url: dli.video_id };
+          } else {
+            let base64Data = $text.base64Encode(resp.data);
+            let imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
+            data = { img: { src: "data:image/png;base64," + imagebase }, pm: { text: dli.title }, url: dli.video_id };
+          }
+          $("Video").insert({ indexPath: $indexPath(0, $("Video").data.length), value: data });
         }
-        return data;
-      }
-    });
-    
-    Promise.all(promises).then(data => {
-      for (let i = 0; i < data.length; i++) {
-        $("Video").insert({ indexPath: $indexPath(0, $("Video").data.length), value: data[i] })
-      }
-      $("Video").endRefreshing()
-    }).catch(err => {
-      console.error(err);
-      $("Video").endRefreshing()
-    })
+      });
+    }
+    $("Video").endRefreshing();
   } catch (err) {
-    console.error(err)
+    console.error(err);
+    $("Video").endRefreshing();
   }
 }
+
+//这段代码的不同之处在于，我们没有等待所有的图片请求都完成后再更新视图，而是在每次图片请求完成时就立即更新视图。这样，用户可以更早地看到结果。
 
 
 
@@ -286,20 +365,8 @@ function play(url, mc) {
 
 
 //第一次运行弹窗提示
-if (!$cache.get("alertShown")) {
-  $ui.alert({
-    title: "温馨提示😀",
-    message: "新增app:\n11款软件🚗\n聚合app上线✅\n------------\n•作者:中车大神🔥",
-    actions: [
-      {
-        title: "知道了",
-        handler: function() {
-          $cache.set("alertShown", true);
-        }
-      }
-    ]
-  });
-}
+
+
 
 
 
@@ -320,7 +387,7 @@ function search(query) {
   //自动刷新函数
 
 async function shuaxin() {
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 1; i++) {
     let videoView = $("Video");
     //防止多次下滑秒退报错
     if (!videoView) {
@@ -338,7 +405,7 @@ async function shuaxin() {
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "3.5") {
+        if (resp.data.version != "4.0") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
@@ -355,7 +422,38 @@ async function get_updata() {
 
             });
             
+        }else{
+          let today = new Date().toLocaleDateString();
+          console.log (today);
+          let key = "dismissedAt";
+          
+          let dismissedAt = $cache.get(key);
+          
+          
+          if (dismissedAt != today) {
+            $ui.alert({
+              title: "公告",
+              message: resp.data.Bulletin,
+              actions: [
+                {
+                  title: "进入软件",
+                  handler: function() {
+                    // 在这里添加进入软件的代码
+                  }
+                },
+                {
+                  title: "今天不再提示",
+                  handler: function() {
+                    $cache.set(key, today);
+                  }
+                }
+              ]
+            });
+          }
+          //..
+        
         }
+        //..
     }
 }
 get_updata()
@@ -391,29 +489,14 @@ function download(url,name) {
 
 //分割线***************
 //启动界面
-function getapplist(){
-$http.get({
-             url:"https://ghproxy.com/https://raw.githubusercontent.com/Q39547190/JS-BOX/main/ZCZHSP.json",
-            handler: function (resp) {
-                var applist = resp.data.applist;
-                $cache.set("applist", applist);
-  }
-  })
-  }
- getapplist();
-var  applist = $cache.get("applist");
- 
- 
 
 
+let applist = [];
 
-
-
-
+// 定义矩阵视图
 const IMAGE_SIZE = $device.info.screen.width / 5;
 const LABEL_HEIGHT = 20;
 const GAP = 10;
-
 let matrix = {
   type: "matrix",
   props: {
@@ -421,75 +504,89 @@ let matrix = {
     itemHeight: IMAGE_SIZE + LABEL_HEIGHT,
     spacing: GAP,
     square: false,
-    template: [{
-      type: "image",
-      props: {
-        id: "image",
-        contentMode: $contentMode.scaleAspectFit,
+    template: [
+      {
+        type: "image",
+        props: {
+          id: "image",
+          contentMode: $contentMode.scaleAspectFit,
+        },
+        layout: (make, view) => {
+          make.centerX.equalTo(view.super);
+          make.top.inset(GAP);
+          make.size.equalTo($size(IMAGE_SIZE - 2 * GAP, IMAGE_SIZE - 2 * GAP));
+        },
       },
-      layout: (make, view) => {
-        make.centerX.equalTo(view.super);
-        make.top.inset(GAP);
-        make.size.equalTo($size(IMAGE_SIZE - 2 * GAP, IMAGE_SIZE - 2 * GAP));
-      },
-    }, {
-      type: "label",
-      props: {
-        id: "label",
-        align: $align.center,
-      },
-      layout: (make, view) => {
-        make.centerX.equalTo(view.super);
-        make.top.equalTo(view.prev.bottom);
-        make.width.equalTo(view.super);
-        make.height.equalTo(LABEL_HEIGHT);
-      },
-    }],
-    data: applist.map(item => {
-      return {
-        image: { src: item.pic_url },
-        label: { text: item.name },
-      };
-    }),
+      {
+        type: "label",
+        props: {
+          id: "label",
+          align: $align.center,
+        },
+        layout: (make, view) => {
+          make.centerX.equalTo(view.super);
+          make.top.equalTo(view.prev.bottom);
+          make.width.equalTo(view.super);
+          make.height.equalTo(LABEL_HEIGHT);
+        },
+      }
+    ],
+    data: [], // 初始时数据为空
   },
   layout: $layout.fill,
   events: {
     didSelect: (sender, indexPath, data) => {
       let platform_id = applist[indexPath.item].platform_id;
-      $cache.set("platform_id", platform_id);
-      let appname = applist[indexPath.item].name;
-      $cache.set("appname", appname);
-      let image_type = applist[indexPath.item].image_type;
-            $cache.set("image_type", image_type);
-      
-      //启动app请求
-      async function main() {
-        try {
-          var channelList = await appdata();
-          // 启动视频界面
-          var obj = channelList[0].category_id;
-          var output = {"category_id": obj };
-          var channelLists = JSON.stringify(output);
-          $cache.set("type",channelLists);
-          $cache.set("pg", 1);
-          jiemian();
-          //加载自动刷新函数                 
-          shuaxin();
-        } catch (error) {
-          console.error(error);
-        }
-      }
-      
-      main();
-      //                                  
+            $cache.set("platform_id", platform_id);
+            let appname = applist[indexPath.item].name;
+            $cache.set("appname", appname);
+            let image_type = applist[indexPath.item].image_type;
+                  $cache.set("image_type", image_type);
+            
+            //启动app请求
+            async function main() {
+              try {
+                var channelList = await appdata();
+                // 启动视频界面
+                var obj = channelList[0].category_id;
+                var output = {"category_id": obj };
+                var channelLists = JSON.stringify(output);
+                $cache.set("type",channelLists);
+                $cache.set("pg", 1);
+                jiemian();
+                //加载自动刷新函数                 
+                shuaxin();
+              } catch (error) {
+                console.error(error);
+              }
+            }
+            
+            main();
+      // 你的 didSelect 事件的代码
     },
   },
 };
 
+// 渲染界面
 $ui.render({
-  props: {
-    title: "中车聚合盒子🚄(持续更新中...)"
-  },
+  props: { title: "中车聚合盒子🚄(持续更新中...)" },
   views: [matrix]
+});
+
+// 获取应用列表
+$http.get({
+  url: "https://ghproxy.com/https://raw.githubusercontent.com/Q39547190/JS-BOX/main/ZCZHSP.json",
+  handler: function(resp) {
+    applist = resp.data.applist;
+    $cache.set("applist", applist);
+    
+    // 更新矩阵视图的数据
+    $("matrix").data = applist.map(item => {
+      return {
+        image: { src: item.pic_url },
+        label: { text: item.name },
+      };
+    });
+  }
 });
 
