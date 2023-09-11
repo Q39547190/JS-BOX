@@ -22,15 +22,29 @@ var urlt2 = $text.base64Decode("aHR0cHM6Ly9qaWVrb3UuYXBpc2FwaXMueHl6OjE4ODgvYXBp
 
 
 var CryptoJS = require("crypto-js");
-                
-                // 定义密钥和IV
-                var secretKey = 'f5d965df75336270';
-                var iv = '97b60394abc2fbe1';
-                
-                // 将密钥和IV转换为CryptoJS词对象
-                var key = CryptoJS.enc.Utf8.parse(secretKey);
-                var iv = CryptoJS.enc.Utf8.parse(iv);
-                
+
+function suanfa() {                                
+var image_type = $cache.get("image_type");
+console.log("算法特征"+image_type)
+var AES_encryptionMode;
+var secretKey;
+var iv;
+
+if (image_type == 2) {
+    AES_encryptionMode = 'CBC';
+    secretKey = 'f5d965df75336270';
+    iv = '97b60394abc2fbe1';
+} else if (image_type == 4) {
+    AES_encryptionMode = 'ECB';
+    secretKey = '525202f9149e061d';
+    iv = '';
+}
+$cache.set("AES_encryptionMode",AES_encryptionMode);
+var key = CryptoJS.enc.Utf8.parse(secretKey);
+var iv = iv ? CryptoJS.enc.Utf8.parse(iv) : ''
+$cache.set("ASEkey",key);
+$cache.set("AESiv",iv);
+}                
                 
 //请求app
 function appdata() {
@@ -287,6 +301,10 @@ function shoucangJM(){
 
 async function getdata() {
   try {
+    var AES_encryptionMode = $cache.get("AES_encryptionMode");
+    var key = $cache.get("ASEkey");
+    var iv = $cache.get("AESiv");
+    console.log("算法模式"+AES_encryptionMode)
     var platform_id = $cache.get("platform_id", platform_id);
     var image_type = $cache.get("image_type");
     var page = $cache.get("pg");
@@ -311,7 +329,8 @@ async function getdata() {
             data = { img: { src: dli.image }, pm: { text: dli.title }, url: dli.video_id };
           } else {
             let base64Data = $text.base64Encode(resp.data);
-            let imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
+            //AES_encryptionMode是变量名必须[]动态获取
+            let imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode[AES_encryptionMode], padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
             data = { img: { src: "data:image/png;base64," + imagebase }, pm: { text: dli.title }, url: dli.video_id };
           }
           $("Video").insert({ indexPath: $indexPath(0, $("Video").data.length), value: data });
@@ -542,6 +561,8 @@ let matrix = {
             $cache.set("appname", appname);
             let image_type = applist[indexPath.item].image_type;
                   $cache.set("image_type", image_type);
+//启动算法
+suanfa();
             
             //启动app请求
             async function main() {
