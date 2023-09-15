@@ -69,7 +69,8 @@
       {
         "pic_url" : "http://h5.kdes.autos/img/71fd19a2-4b3a-424c-a322-57b6b8ebd1c8.png",
         "name" : "51品茶\n(楼凤✅新)",
-        "url" : "http://h5.kdes.autos/#/pages/fenglou/fenglou?type=45&isSearch=1&name=51%E5%93%81%E8%8C%B6&fenglouId=33&detailHttp=0"
+        "url" : "http://h5.kdes.autos/#/pages/fenglou/fenglou?type=45&isSearch=1&name=51%E5%93%81%E8%8C%B6&fenglouId=33&detailHttp=0",
+        "type" : "1"
       },
       {
         "platform_id" : "4",
