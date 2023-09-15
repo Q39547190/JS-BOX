@@ -1,5 +1,5 @@
 /*
-2023年9月11日更新
+2023年9月15日更新
 
 
 
@@ -436,7 +436,7 @@ async function shuaxin() {
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "4.7") {
+        if (resp.data.version != "5.0") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
@@ -525,8 +525,8 @@ function download(url,name) {
 let applist = [];
 
 // 定义矩阵视图
-const IMAGE_SIZE = $device.info.screen.width / 5;
-const LABEL_HEIGHT = 20;
+const IMAGE_SIZE = $device.info.screen.width / 5;//字体数量
+const LABEL_HEIGHT = 50;//高度
 const GAP = 10;
 let matrix = {
   type: "matrix",
@@ -553,6 +553,7 @@ let matrix = {
         props: {
           id: "label",
           align: $align.center,
+          lines:2
         },
         layout: (make, view) => {
           make.centerX.equalTo(view.super);
@@ -567,6 +568,15 @@ let matrix = {
   layout: $layout.fill,
   events: {
     didSelect: (sender, indexPath, data) => {
+      let types = applist[indexPath.item].type;
+      if (types == 1) {
+        //console.log("是的");
+        let url = applist[indexPath.item].url;
+        let appname = applist[indexPath.item].name;
+        plays(url,appname);
+        
+      }else{
+      
       let platform_id = applist[indexPath.item].platform_id;
             $cache.set("platform_id", platform_id);
             let appname = applist[indexPath.item].name;
@@ -596,6 +606,8 @@ suanfa();
             
             main();
       // 你的 didSelect 事件的代码
+      }
+      //
     },
   },
 };
@@ -622,4 +634,22 @@ $http.get({
     });
   }
 });
+
+//链接是软件
+function plays(url,appname) {
+    $ui.push({
+        props: {
+            title: appname
+        },
+        views: [{
+            type: "web",
+            props: {
+                id: "webview",
+                url: url
+            },
+            layout: $layout.fill
+        }]
+    });
+}
+
 
