@@ -1,6 +1,37 @@
 {
   "applist" : [
+     
+     {
+        "pic_url" : "https://z1.ax1x.com/2023/09/16/pPfN9UJ.png",
+        "name" : "激活图片\n点击这里)",
+        "url" : "https://h5.kdes.autos/#/pages/index/index",
+        "type" : "3"
+      }, 
+     {
+        "platform_id" : "0",
+        "pic_url" : "",
+        "name" : "",
+        "type" : "0"
+      },
       {
+        "platform_id" : "0",
+        "pic_url" : "",
+        "name" : "",
+        "type" : "0"
+      },
+      {
+        "platform_id" : "0",
+        "pic_url" : "",
+        "name" : "",
+        "type" : "0"
+      },
+      {
+        "platform_id" : "0",
+        "pic_url" : "",
+        "name" : "",
+        "type" : "0"
+      },
+     {
         "platform_id" : "0",
         "pic_url" : "",
         "name" : "********",
@@ -127,16 +158,16 @@
         "image_type" : "0"
       },
       {
-        "platform_id" : "0",
-        "pic_url" : "",
-        "name" : "",
-        "type" : "0"
+        "pic_url" : "https://h5.kdes.autos/img/0dccaa7a-b637-4554-b3b0-3edf5e3eb1bd.png",
+        "name" : "汤不热\n(新✅)",
+        "url" : "https://h5.kdes.autos/#/pages/search/search?keyWord=64&type=56&isSearch=0&passageName=%E6%B1%A4%E5%A4%B4%E6%9D%A1",
+        "type" : "2"
       },
       {
-        "platform_id" : "0",
-        "pic_url" : "",
-        "name" : "",
-        "type" : "0"
+        "pic_url" : "https://h5.kdes.autos/img/65954859-45c2-4953-94a4-aa78925399a2.png",
+        "name" : "50度灰\n(新✅)",
+        "url" : "https://h5.kdes.autos/#/pages/search/search?keyWord=65&type=57&isSearch=0&passageName=51%E5%BA%A6%E7%81%B0",
+        "type" : "2"
       },
       {
         "platform_id" : "0",
