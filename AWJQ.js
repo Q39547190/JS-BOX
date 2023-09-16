@@ -1,5 +1,5 @@
 /*
-2023年9月15日更新
+2023年9月16日更新
 
 
 
@@ -436,7 +436,7 @@ async function shuaxin() {
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "5.0") {
+        if (resp.data.version != "6.0") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
@@ -570,42 +570,41 @@ let matrix = {
     didSelect: (sender, indexPath, data) => {
       let types = applist[indexPath.item].type;
       if (types == 1) {
-        //console.log("是的");
-        let url = applist[indexPath.item].url;
-        let appname = applist[indexPath.item].name;
-        plays(url,appname);
-        
-      }else{
-      
-      let platform_id = applist[indexPath.item].platform_id;
-            $cache.set("platform_id", platform_id);
-            let appname = applist[indexPath.item].name;
-            $cache.set("appname", appname);
-            let image_type = applist[indexPath.item].image_type;
-                  $cache.set("image_type", image_type);
-//启动算法
-suanfa();
-            
-            //启动app请求
-            async function main() {
+          let url = applist[indexPath.item].url;
+          let appname = applist[indexPath.item].name;
+          loufengplays(url, appname);
+      } else if (types == 2) {
+          let url = applist[indexPath.item].url;
+          let appname = applist[indexPath.item].name;
+          shipinplays(url, appname);
+      } else if (types == 3) {
+          let url = applist[indexPath.item].url;
+          let appname = applist[indexPath.item].name;
+          jihuoplays(url, appname);
+      } else {
+          console.log("错误🙅");
+          let platform_id = applist[indexPath.item].platform_id;
+          $cache.set("platform_id", platform_id);
+          let appname = applist[indexPath.item].name;
+          $cache.set("appname", appname);
+          let image_type = applist[indexPath.item].image_type;
+          $cache.set("image_type", image_type);
+          suanfa();
+          async function main() {
               try {
-                var channelList = await appdata();
-                // 启动视频界面
-                var obj = channelList[0].category_id;
-                var output = {"category_id": obj };
-                var channelLists = JSON.stringify(output);
-                $cache.set("type",channelLists);
-                $cache.set("pg", 1);
-                jiemian();
-                //加载自动刷新函数                 
-                shuaxin();
+                  var channelList = await appdata();
+                  var obj = channelList[0].category_id;
+                  var output = {"category_id": obj};
+                  var channelLists = JSON.stringify(output);
+                  $cache.set("type", channelLists);
+                  $cache.set("pg", 1);
+                  jiemian();
+                  shuaxin();
               } catch (error) {
-                console.error(error);
+                  console.error(error);
               }
-            }
-            
-            main();
-      // 你的 didSelect 事件的代码
+          }
+          main();
       }
       //
     },
@@ -635,8 +634,8 @@ $http.get({
   }
 });
 
-//链接是软件
-function plays(url,appname) {
+//楼凤网页
+function loufengplays(url,appname) {
     $ui.push({
         props: {
             title: appname
@@ -651,5 +650,127 @@ function plays(url,appname) {
         }]
     });
 }
+//视频网页
+function shipinplays(url,appname) {
+$ui.push({
+    props: {
+        title: appname,
+        bgcolor: $color("#9C64A7")//背景颜色
+    },
+    views: [{
+        type: "label",
+        props: {
+            text: "收藏的视频在右侧❤️按钮\n⬇️返回请点击下方'<'按钮      点击下方⭐️收藏视频",
+            textColor: $color("black"),
+            font: $font(20),
+            align: $align.left,
+            lines:2,
+            
+        },
+        layout: function(make, view) {
+            make.left.equalTo($("hb_img").right);
+                        make.centerY.equalTo($("hb_img"));
+        }
+    },{
+        type: "button",
+        props: {
+            id: "hb_img",
+            src: "https://icon-icons.com/downloadimage.php?id=79718&root=1128/ICO/512/&file=1486164750-love08_79718.ico"
+        },
+        events: {
+            tapped: function(sender) {
+                
+                //
+                shoucangpalys();
+            }
+        },
+        layout: function(make, view) {
+            make.top.inset(-5);
+            make.width.height.equalTo(60);
+            make.right.inset(20);
+        }
+    },
+      
+      {
+        type: "web",
+        props: {
+            id: "webview",
+            url: url,
+            script: `
+                var script = document.createElement('script');
+                script.src = 'https://h5.kdes.autos/static/js/pages-baoliao-baoliao~pages-baoliao-baoliaoDetail~pages-comics-comics~pages-comics-comicsView~pages-~b98920ef.19dbb9ca.js';
+                document.body.appendChild(script);
+            `
+        },
+        layout: function(make, view) {
+          make.top.inset(50);  // 将网页向下移动20个像素
+            make.width.equalTo($device.info.screen.width);
+            make.height.equalTo($device.info.screen.height - 200);//底部上拉
+make.top.equalTo($("hb_img").bottom).offset(0); // 使网页视图的顶部对齐按钮的底部，且中间留10个像素的间距            
+          }
+    },
+    
+    
+    ]
+});
+}
+
+
+//激活图片加载
+
+function jihuoplays(url,appname) {
+    $ui.push({
+    props: {
+        title: "请点依次击下方4个app等待加载图片"
+    },
+    views: [{
+        type: "web",
+        props: {
+            id: "webview",
+            url: url,
+            script: `
+            //js代码注入隐藏顶部
+                var style = document.createElement('style');
+                style.innerHTML = 'body { margin-top: -750px; }';
+                document.head.appendChild(style);
+            `
+        },
+        layout: function(make, view) {
+            make.width.equalTo($device.info.screen.width);
+        
+            make.height.equalTo($device.info.screen.height);
+            make.top.equalTo(0);
+        }
+    }]
+});
+}
+
+//网页收藏夹
+
+function shoucangpalys(url,appname) {
+    $ui.push({
+    props: {
+        title: "收藏夹2"
+    },
+    views: [{
+        type: "web",
+        props: {
+            id: "webview",
+            url: "https://h5.kdes.autos/#/pages/collect/collect",
+            script: `
+                var script = document.createElement('script');
+                script.src = 'https://h5.kdes.autos/static/js/pages-baoliao-baoliao~pages-baoliao-baoliaoDetail~pages-comics-comics~pages-comics-comicsView~pages-~b98920ef.19dbb9ca.js';
+                document.body.appendChild(script);
+            `
+        },
+        layout: function(make, view) {
+            make.width.equalTo($device.info.screen.width);
+//隐藏底部信息            
+            make.height.equalTo($device.info.screen.height - 0);
+          }
+    }]
+});
+}
+
 
 
