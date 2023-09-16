@@ -766,7 +766,7 @@ function shoucangpalys(url,appname) {
         layout: function(make, view) {
             make.width.equalTo($device.info.screen.width);
 //隐藏底部信息            
-            make.height.equalTo($device.info.screen.height + 300);
+            make.height.equalTo($device.info.screen.height - 0);
           }
     }]
 });
