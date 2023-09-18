@@ -632,7 +632,7 @@ function download2(url, name,artist,xuanze) {
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL1lJTllVRUhFWkktZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "3.0") {
+        if (resp.data.version != "2.7") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
@@ -640,7 +640,7 @@ async function get_updata() {
                     {
                         title: "立即更新",
                         handler: function () {
-                            download(resp.data.updata,resp.data.name)
+                            gengxin(resp.data.updata,resp.data.name)
                         }
                     }, {
                         title: "取消"
@@ -684,6 +684,34 @@ async function get_updata() {
     }
 }
 get_updata()
+function gengxin(url,name) {
+    $ui.toast("正在安装中 ...");
+    $http.download({
+        url: url,
+        handler: function (resp) {
+            $addin.save({
+                name: name,
+                data: resp.data,
+                handler: function () {
+                    $ui.alert({
+                        title: "安装完成",
+                        message: "\n是否打开？\n" + name,
+                        actions: [
+                            {
+                                title: "打开",
+                                handler: function () {
+                                    $app.openExtension(name)
+                                }
+                            },
+                            {
+                                title: "不了"
+                            }]
+                    });
+                }
+            })
+        }
+    })
+}
           
                               // 启动定时器
 function dingshiqi(){                              
