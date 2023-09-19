@@ -181,6 +181,7 @@ createPopupView(datas);
           console.log(data)
         },
         didLongPress: function(sender, indexPath, data) {
+            $ui.toast("收藏成功✅");
           var datas ={
             "rid" : data.rid,
             "info": {
@@ -210,7 +211,7 @@ createPopupView(datas);
            //更新新收藏视图             
           $("infoLists").data = savedData;
                         
-                        $ui.toast("收藏成功✅");
+                        
                 },
         didReachBottom:function(sender){
           sender.endFetchingMore();
