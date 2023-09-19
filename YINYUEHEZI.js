@@ -159,6 +159,7 @@ createPopupView(datas);
       },
       events:{
         didSelect:function(sender,indexPath,data){
+          console.log("点击的数据"+JSON.stringify(data))   
           //获取id获取歌词
           var rid = data.rid
           console.log(rid);
@@ -172,13 +173,45 @@ createPopupView(datas);
           $("songimg").src=data.cover.src;
 
 //
-;
+
 
 
 
           //
           console.log(data)
         },
+        didLongPress: function(sender, indexPath, data) {
+          var datas ={
+            "rid" : data.rid,
+            "info": {
+            		"text": data.songInfo.text
+            	},
+            	"pic": {
+		"src": data.cover.src
+	}
+          }
+                      // 获取已保存的数据
+                        let savedData = $cache.get("shoucang") || [];
+                        
+                        // 检查新的数据是否已经存在于数组中
+                        let index = savedData.findIndex(item => item.rid === datas.rid);
+                        if (index !== -1) {
+                            // 如果存在，就更新这个数据
+                            savedData[index] = datas;
+                        } else {
+                            // 如果不存在，就添加这个数据
+                            savedData.unshift(datas);
+                        }
+                        
+                        console.log("收藏" + JSON.stringify(savedData));
+                        
+                        // 保存数据
+                        $cache.set("shoucang", savedData);
+           //更新新收藏视图             
+          $("infoLists").data = savedData;
+                        
+                        $ui.toast("收藏成功✅");
+                },
         didReachBottom:function(sender){
           sender.endFetchingMore();
           var page=$cache.get("pg")+1;
@@ -269,24 +302,53 @@ createPopupView(datas);
             }
           }
         },
+        //收藏按钮
+        {
+                  type: "button",
+                  props: {
+                    id: "previous",
+                    title: "👁‍🗨",
+                    titleColor: $color("#000"),
+                    bgcolor: $color("clear"),
+                    font: $font(40)
+                  },
+                  layout: function(make, view) {
+                    //高度
+                    make.bottom.equalTo($("slider").top).offset(-60);
+                    //右偏移
+                    make.left.equalTo(365);
+                  },
+                  events: {
+                    tapped: function(sender) {
+                    var datas = $cache.get("shoucang");
+                    
+                    
+                    shoucangshitu(datas);
+                    $("infoLists").data = datas;
+                      
+                    }
+                  }
+                },
+        //
         {
           type: "button",
           props: {
             id: "previous",
-            //title: "⏮",
+            title: "⏮",
             titleColor: $color("#000"),
             bgcolor: $color("clear"),
-            font: $font(20)
+            font: $font(30)
           },
           layout: function(make, view) {
             //高度
             make.bottom.equalTo($("slider").top).offset(-10);
             //右偏移
-            make.left.equalTo(250);
+            make.left.equalTo(200);
           },
           events: {
             tapped: function(sender) {
-              // 播放上一首歌曲
+            //上一首歌
+            playPrevious();
               
             }
           }
@@ -301,9 +363,9 @@ createPopupView(datas);
             font: $font(30)
           },
           layout: function(make, view) {
-            make.bottom.equalTo($("slider").top).offset(0);
+            make.bottom.equalTo($("slider").top).offset(-10);
             //make.centerX.equalTo(view.super);
-            make.left.equalTo(280);
+            make.left.equalTo(270);
           },
           events: {
             tapped: function(sender) {
@@ -335,22 +397,20 @@ startRotation();// 开始封面旋转
           type: "button",
           props: {
             id: "next",
-            title: "⏬",
+            title: "⏭",
             titleColor: $color("#000"),
             bgcolor: $color("clear"),
             font: $font(30)
           },
           layout: function(make, view) {
-            make.bottom.equalTo($("slider").top).offset(0);
-            make.right.equalTo(-10);
+            make.bottom.equalTo($("slider").top).offset(-10);
+            make.right.equalTo(-40);
           },
           events: {
             tapped: function(sender) {
               // 播放下一首歌曲
               
-              var data = sender.data.data;
-                                              $ui.toast("✅开始下载歌曲"+data.geqv+"-"+data.geshou);
-                              download(data.url, data.geqv,data.geshou);
+              playNext();
             }
           }
         },
@@ -524,7 +584,10 @@ stopRotation();
 resetRotation();
 //播放音乐
                     $audio.play({
-                      url: songgeqv
+                      url: songgeqv,
+                      events: {
+                            didPlayToEndTime: playNext //歌曲播放完毕自动切换收藏循环
+                          }
                     })
                     
                  
@@ -632,7 +695,7 @@ function download2(url, name,artist,xuanze) {
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL1lJTllVRUhFWkktZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "3.0") {
+        if (resp.data.version != "4.0") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
@@ -975,3 +1038,207 @@ function createPopupView(datas) {
     }]
   });
 }
+//收藏歌曲列表
+function shoucangshitu(datas) {
+  $("mainView").add({
+    type: "view",
+    props: {
+      id: "shoucangView",
+      bgcolor: $color("white"),
+      radius: 10,
+      borderWidth: 2,
+      borderColor: $color("black")
+    },
+    layout: function(make, view) {
+      make.center.equalTo(view.super);
+      make.size.equalTo($size(300, 380));
+    },
+    views: [
+{
+  type: "list",
+  props: {
+    id: "infoLists",
+    rowHeight: 60,
+    template: [
+      {
+        type: "image",
+        props: {
+          id: "pic",
+          radius: 5
+        },
+        layout: function(make, view) {
+          make.left.inset(10);
+          make.centerY.equalTo(view.super);
+          make.size.equalTo($size(40, 40));
+        }
+      },
+      {
+        type: "label",
+        props: {
+          id: "info",
+          textColor: $color("#000"),
+          font: $font(20),
+          align: $align.left,
+          lines: 2,
+        },
+        layout: function(make, view) {
+          make.left.equalTo($("pic").right).offset(10);
+          make.right.inset(10);
+          make.centerY.equalTo(view.super);
+        }
+      }
+    ],
+    
+      },
+  layout: function(make, view) {
+    make.top.left.right.inset(10);
+    make.bottom.equalTo($("closeButton").top).offset(-10);
+  },
+  events: {
+    didSelect: function(sender, indexPath, data) {
+      
+      playSong(indexPath.row);
+      
+      //$ui.alert(data.info.text + "被点击了");
+      console.log(JSON.stringify(data))
+    },
+    //
+    didLongPress: function(sender, indexPath, data) {
+              //JSON.stringify` 方法将每个项和 `data` 转换为 JSON 字符串对比删除包含data数据
+                          let savedData = $cache.get("shoucang") || [];
+                          savedData = savedData.filter(item => JSON.stringify(item) !== JSON.stringify(data));
+                          $cache.set("shoucang", savedData);
+                            
+                          
+               //刷新收藏夹             
+              
+              $ui.toast("收藏删除成功❌");
+              $("infoLists").data = savedData;
+                    }
+                    //
+  }
+}, {
+  type: "button",
+  props: {
+    id: "closeButton",
+    title: "❌",
+  },
+  layout: function(make, view) {
+    make.bottom.inset(10);
+    make.centerX.equalTo(view.super);
+  },
+  events: {
+    tapped: function(sender) {
+      $("shoucangView").remove();
+    }
+  }
+}
+      ]
+      
+
+  });
+}
+//收藏歌曲缓存载入
+function shoucangdeqv(){
+var datas = $cache.get("shoucang");
+
+  var data = datas;
+  return data; // 返回data变量
+  
+}
+var currentIndex = 0;
+
+
+function playSong(index) {
+  $ui.toast("播放顺序😃✅"+index);
+  //载入歌曲缓存
+  var data = shoucangdeqv(); // 调用shoucangdeqv函数并获取返回的data变量
+  currentIndex = index;
+  //传入封面和歌曲名
+            $("songname").text=data[currentIndex].info.text;
+            $("songimg").src=data[currentIndex].pic.src
+            //保存rid
+  $cache.set("rid",data[currentIndex].rid)
+  //启动歌词
+  songgeci();
+  $http.get({
+           url:"https://kwapi-api-iobiovqpvk.cn-beijing.fcapp.run/mp3?rid="+data[currentIndex].rid,
+           header: myHeaders,
+          handler: function (resp) {
+              $ui.loading(false);
+              var songgeqv = resp.data;
+              songgeqv = songgeqv.replace(/\r/g, '');
+console.log("歌曲链接"+JSON.stringify(songgeqv))              
+
+  //console.log(JSON.stringify(data[currentIndex]))
+  //console.log("成功")
+  //停止封面旋转
+  stopRotation();
+   //重置封面旋转
+  resetRotation();
+  //播放音乐
+  
+  $audio.play({
+    url: songgeqv,
+    events: {
+      didPlayToEndTime: playNext
+    }
+    });
+    //
+    // 启动定时器检测歌曲状态         
+              var checkAudioStatus=setInterval(function(){
+                if($audio.status==2){
+                  $ui.toast("歌曲加载成功😃✅");
+                  $("playPause").title="⏸️";
+                  
+                 
+                  //停止封面旋转
+                  stopRotation();
+                  //重置封面旋转
+                  resetRotation();
+                  //启动定时器
+                  dingshiqi();
+                   //启动封面旋转
+                   startRotation();   
+                 
+                  
+                  clearInterval(checkAudioStatus)
+                }else{
+                  $ui.toast("歌曲正在加载中……🥱")
+                  console.log("歌曲"+songgeqv)
+                  
+                  //停止封面旋转
+                  stopRotation();
+                  //重置封面旋转
+                  resetRotation();
+    
+                }
+              },1000);  
+ //    
+ }
+ }) 
+  
+  
+}
+
+function playNext() {
+  //载入歌曲缓存
+    var data = shoucangdeqv(); // 调用shoucangdeqv函数并获取返回的data变量
+  currentIndex++;
+  if (currentIndex >= data.length) {
+    currentIndex = 0; // 如果已经到了最后一首歌，那么重新开始
+  }
+  playSong(currentIndex);
+}
+
+function playPrevious() {
+  //载入歌曲缓存
+    var data = shoucangdeqv(); // 调用shoucangdeqv函数并获取返回的data变量
+  currentIndex--;
+  if (currentIndex < 0) {
+    currentIndex = data.length - 1;
+  }
+  playSong(currentIndex);
+}
+
+
