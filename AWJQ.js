@@ -856,11 +856,11 @@ $ui.render({
          type: "label",
          props: {
            id: "beizhu",
-           text: "by:中车大神\n\n\n仅供学习禁止倒卖\n\n更新日期：2023-09-20",
+           text: "by:中车大神\n\n\n宗旨:看不过来没关系，但必须拥有!\n\n仅供学习禁止倒卖\n\n更新日期：2023-09-20",
            align: $align.center,
            textColor:$color("#8496B8"),
            font: $font(14),
-           lines :5
+           lines :50
          },
          layout: function(make, view) {
            make.centerX.equalTo(view.super);
