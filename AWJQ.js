@@ -1,5 +1,5 @@
 /*
-2023年9月16日更新
+2023年9月20日更新
 
 
 
@@ -436,7 +436,7 @@ async function shuaxin() {
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "6.0") {
+        if (resp.data.version != "7.0") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
@@ -487,7 +487,7 @@ async function get_updata() {
         //..
     }
 }
-get_updata()
+
 
 function download(url,name) {
     $ui.toast("正在安装中 ...");
@@ -581,7 +581,11 @@ let matrix = {
           let url = applist[indexPath.item].url;
           let appname = applist[indexPath.item].name;
           jihuoplays(url, appname);
-      } else {
+      } else if (types == 4) {
+           let url = applist[indexPath.item].url;
+           let appname = applist[indexPath.item].name;
+           baoliaopalys(url,appname);
+       }else {
           console.log("错误🙅");
           let platform_id = applist[indexPath.item].platform_id;
           $cache.set("platform_id", platform_id);
@@ -598,8 +602,11 @@ let matrix = {
                   var channelLists = JSON.stringify(output);
                   $cache.set("type", channelLists);
                   $cache.set("pg", 1);
+                  //启动app界面
                   jiemian();
+                  //启动获取界面数据
                   shuaxin();
+                  
               } catch (error) {
                   console.error(error);
               }
@@ -612,10 +619,12 @@ let matrix = {
 };
 
 // 渲染界面
+function zhongchehezi () {
 $ui.render({
   props: { title: "中车聚合盒子🚄(持续更新中...)" },
   views: [matrix]
 });
+
 
 // 获取应用列表
 $http.get({
@@ -633,6 +642,10 @@ $http.get({
     });
   }
 });
+//启动更新函数
+get_updata()
+}
+
 
 //楼凤网页
 function loufengplays(url,appname) {
@@ -662,7 +675,7 @@ $ui.push({
         props: {
             text: "收藏的视频在右侧❤️按钮\n⬇️返回请点击下方'<'按钮      点击下方⭐️收藏视频",
             textColor: $color("black"),
-            font: $font(20),
+            font: $font(19),
             align: $align.left,
             lines:2,
             
@@ -771,6 +784,123 @@ function shoucangpalys(url,appname) {
     }]
 });
 }
+
+function baoliaopalys(url,appname) {
+    $ui.push({
+    props: {
+        title: appname
+    },
+    views: [{
+        type: "web",
+        props: {
+            id: "webview",
+            url: url,
+            script: `
+                var script = document.createElement('script');
+                script.src = 'https://h5.kdes.autos/static/js/pages-baoliao-baoliao~pages-baoliao-baoliaoDetail~pages-comics-comics~pages-comics-comicsView~pages-~b98920ef.19dbb9ca.js';
+                document.body.appendChild(script);
+            `
+        },
+        layout: function(make, view) {
+            make.width.equalTo($device.info.screen.width);
+//隐藏底部信息            
+            make.height.equalTo($device.info.screen.height - 38);
+          }
+    }]
+});
+}
+//启动加载界面
+function zhongcheLoading() {
+$ui.render({
+  views: [
+    {
+      type: "image",
+      props: {
+        id: "loadingImage",
+        src: "https://z1.ax1x.com/2023/09/16/pPfN9UJ.png",
+        radius: 45,
+        borderWidth: 5
+      },
+      layout: function(make, view) {
+        make.centerX.equalTo(view.super);
+        make.centerY.equalTo(view.super).offset(-100); // 将图片视图放在屏幕中央稍微上方的位置
+        make.size.equalTo($size(90, 90)); // 设置图片视图的大小为90x90
+      }
+    },
+    {
+      type: "progress",
+      props: {
+        id: "progress",
+        value: 0
+      },
+      layout: function(make, view) {
+        make.centerX.equalTo(view.super);
+        make.top.equalTo($("loadingImage").bottom).offset(20); // 将进度条放在图片视图的下方
+        make.width.equalTo(view.super).multipliedBy(0.8);
+        make.height.equalTo(20);
+      }
+    },
+    {
+      type: "label",
+      props: {
+        id: "loadingLabel",
+        text: "加载中… 0%",
+        align: $align.center
+      },
+      layout: function(make, view) {
+        make.centerX.equalTo(view.super);
+        make.top.equalTo($("progress").bottom).offset(10);
+      }
+    },
+   {
+         type: "label",
+         props: {
+           id: "beizhu",
+           text: "by:中车大神\n\n\n仅供学习禁止倒卖\n\n更新日期：2023-09-20",
+           align: $align.center,
+           textColor:$color("#8496B8"),
+           font: $font(14),
+           lines :5
+         },
+         layout: function(make, view) {
+           make.centerX.equalTo(view.super);
+           make.top.equalTo($("progress").bottom).offset(60);
+         }
+       } 
+  ]
+});
+simulateLoading()
+}
+
+
+function simulateLoading() {
+  var progressView = $("progress");
+  var loadingLabel = $("loadingLabel");
+  var progress = 0;
+  var intervalID = setInterval(function() {
+    progress += 0.1;
+    if (progress > 1) {
+      progress = 1;
+      clearInterval(intervalID);
+      loadingLabel.text = "加载完成！准备开车";
+      //启动主页面
+      zhongchehezi ();
+      
+    } else {
+      loadingLabel.text = "加载中… " + Math.round(progress * 100) + "%";
+    }
+    $ui.animate({
+      duration: 0.5,
+      animation: function() {
+        progressView.value = progress;
+      }
+    });
+  }, 250);
+
+}
+//启动加载界面
+zhongcheLoading();
+
 
 
 
