@@ -1,5 +1,5 @@
 /*
-2023年9月20日更新
+2023年9月21日更新
 
 
 
@@ -436,7 +436,7 @@ async function shuaxin() {
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "7.1") {
+        if (resp.data.version != "8.0") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
@@ -585,6 +585,9 @@ let matrix = {
            let url = applist[indexPath.item].url;
            let appname = applist[indexPath.item].name;
            baoliaopalys(url,appname);
+       }else if (types == 6) {
+           aituoyiapp();
+           
        }else {
           console.log("错误🙅");
           let platform_id = applist[indexPath.item].platform_id;
@@ -784,7 +787,7 @@ function shoucangpalys(url,appname) {
     }]
 });
 }
-
+//51爆料界面
 function baoliaopalys(url,appname) {
     $ui.push({
     props: {
@@ -809,6 +812,382 @@ function baoliaopalys(url,appname) {
     }]
 });
 }
+
+//AI脱衣界面
+function aituoyiapp (){
+var MYheaders = {
+ 'Accept' : `*/*`,
+ 'Origin' : `https://huanlianapp.com`,
+ 'Accept-Encoding' : `gzip, deflate, br`,
+ 'Content-Type' : `multipart/form-data; boundary=----WebKitFormBoundaryPvc5QqLJV5BvEPjr`,
+ 'Connection' : `keep-alive`,
+ 'Host' : `101.43.71.220:15002`,
+ 'User-Agent' : `Mozilla/5.0 (iPhone; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Mobile/15E148 Safari/604.1`,
+ 'Authorization' : `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjbGllbnQudnVlYWRtaW4iLCJhdWQiOiJzZXJ2ZXIudnVlYWRtaW4iLCJpYXQiOjE2OTUyNTc0MjcsImV4cCI6MTE2OTUyNTc0MjYsInVpZCI6NTY3NX0.xC9VjjGdrB_aMnwTP_IhJWrKV2jnKCYgkO17GCikBzI`,
+ 'Accept-Language' : `zh-CN,zh-Hans;q=0.9`,
+ 'Referer' : `https://huanlianapp.com/`
+ };
+ 
+ var MYheaders2 = {
+  'Accept' : `*/*`,
+  'Origin' : `https://huanlianapp.com`,
+  'Accept-Encoding' : `gzip, deflate, br`,
+  'Content-Type' : `application/json`,
+  'Connection' : `keep-alive`,
+  'Host' : `101.43.71.220:15002`,
+  'User-Agent' : `Mozilla/5.0 (iPhone; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Mobile/15E148 Safari/604.1`,
+  'Authorization' : `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjbGllbnQudnVlYWRtaW4iLCJhdWQiOiJzZXJ2ZXIudnVlYWRtaW4iLCJpYXQiOjE2OTUyNTc0MjcsImV4cCI6MTE2OTUyNTc0MjYsInVpZCI6NTY3NX0.xC9VjjGdrB_aMnwTP_IhJWrKV2jnKCYgkO17GCikBzI`,
+  'Accept-Language' : `zh-CN,zh-Hans;q=0.9`,
+  'Referer' : `https://huanlianapp.com/`
+  };
+ 
+
+const CryptoJS = require('crypto-js');
+
+function decrypt(encryptedBase64Str) {
+    console.log(encryptedBase64Str);
+    var AES_encryptionMode = 'ECB';
+    var secretKey = '1111111111111111';
+
+    var key = CryptoJS.enc.Utf8.parse(secretKey);
+
+    try {
+        let decrypted = CryptoJS.AES.decrypt(encryptedBase64Str, key, { mode: CryptoJS.mode[AES_encryptionMode], padding: CryptoJS.pad.Pkcs7 });
+        let imagebase = decrypted.toString(CryptoJS.enc.Base64);
+        console.log(imagebase);
+        return imagebase;
+    } catch (error) {
+        console.error(error);
+        return '';
+    }
+}
+
+
+function generateRandomFilename() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+         s4() + '-' + s4() + s4() + s4() + ".jpeg";
+}
+
+let randomFilename = generateRandomFilename(); // 生成一个随机文件名
+
+$ui.push({
+  props: { title: "AI脱衣" },
+  views: [
+    //
+    {
+                    type: "label",
+                    props: {
+                        
+                        textColor:$color("#8496B8"),
+                                   font: $font(14),
+                                   lines :50,
+                        align: $align.center,
+                        text: "by:中车大神\n\n\温馨提示：点击选择照片即可脱衣\n\n\n更新日期：2023-09-21"
+                    },
+                    layout: function (make, view) {
+                        make.top.equalTo(view.super).offset(600);
+    make.left.equalTo(view.super).offset(120);                    
+                    }
+                },
+    {
+      type: "button",
+      props: { title: "选择照片" },
+      layout: function (make, view) {
+        make.center.equalTo(view.super);
+        make.size.equalTo($size(200,50));
+      },
+      events: {
+        tapped: function (sender) {
+          $photo.pick({
+            format: 'data',
+            handler: function (resp) {
+              var imageData = resp.data;
+              if (imageData) {
+                $ui.toast("照片已选择");
+                uploadImage(imageData);
+              } else {
+                //$ui.alert("未选择照片");
+              }
+            },
+          });
+        },
+      },
+    },
+    {
+          type: "image",
+          props: {
+            id: "imageView",
+            src: "http://66.42.49.171:16666/static/picture/1.jpg",
+          },
+          layout: function(make, view) {
+            make.centerX.equalTo(view.super); // 水平居中
+            make.bottom.equalTo($("button").top).offset(-50); // 在按钮上方50个像素
+            make.size.equalTo($size(300, 300)); // 设置大小为100x100
+          }
+        },
+  ],
+});
+
+function uploadImage(imageData) {
+
+
+  //request
+  
+  $http.upload({
+    method: "POST",
+    url: "https://101.43.71.220:15002/api/Open/aup",
+    header: MYheaders,
+    files: [
+        {
+          "name": "file",
+          "filename": randomFilename, // 使用随机文件名
+          "data": imageData, // 你的图片数据
+        }
+      ],
+    handler: function(resp) {
+      let url = resp.data.data
+      console.log(url)
+      $http.get({
+              url: url,
+          handler: function(resp) {
+              var encryptedimgData = $text.base64Encode(resp.data);
+              var decryptedData = decrypt(encryptedimgData);
+              var imgdatas1 =  "data:image/png;base64," + decryptedData ;
+               aituti2(url,imgdatas1);
+              
+              console.log("返回数据"+decryptedData);
+          }
+      });
+     
+      
+    }
+  })
+
+}
+function aituti2(url,imgdatas1) {
+  console.log("返回链接"+url);
+  
+$ui.push({
+  views: [{
+                    type: "label",
+                    props: {
+                        id: "aitixing",
+                        textColor:$color("#8496B8"),
+                                   font: $font(14),
+                                   lines :50,
+                        align: $align.center,
+                        text: "by:中车大神\n\n\nAI脱衣不一定每次都完美！\n假如不满意请点击重新脱衣✅\n\n\n更新日期：2023-09-21"
+                    },
+                    layout: function (make, view) {
+                        make.top.equalTo(view.super).offset(600);
+    make.left.equalTo(view.super).offset(120);                    
+                    }
+                },
+                {
+                type: "label",
+                props: {
+                    id: "aijiazaitis",
+                    font: $font("bold", 25),
+                    textColor: $color("#0000"),
+                    align: $align.center,
+                    text: "加载中···"
+                },
+                layout: function (make, view) {
+                    make.top.equalTo(view.super).offset(200);
+make.left.equalTo(view.super).offset(230);                    
+                }
+            },
+    {
+      type: "label",
+      props: {
+        text: "脱衣前",
+        font:$font(20),
+        align: $align.center
+      },
+      layout: function(make, view) {
+        make.top.equalTo(view.super).offset(10);
+        make.left.equalTo(view.super).offset(10);
+      }
+    },
+    {
+          type: "image",
+          props: {
+            id: "imgs1",
+            borderWidth: 1, // 设置边框宽度
+                        borderColor: $color("black") // 设置边框颜色为黑色
+          },
+          layout: function(make, view) {
+            make.top.equalTo(view.prev.bottom).offset(10);
+            make.left.equalTo(view.super).offset(10);
+            make.size.equalTo($size(200, 400));
+          }
+        },
+    {
+      type: "label",
+      props: {
+        text: "脱衣后",
+        font:$font(20),
+        align: $align.center
+      },
+      layout: function(make, view) {
+        make.top.equalTo(view.super).offset(10);
+        make.left.equalTo($("imgs1").right).offset(5); // 设置标签在第一张图片右边5个像素
+      }
+    },
+    {
+          type: "image",
+          props: {
+            id: "imgs2",
+            borderWidth: 1, // 设置边框宽度
+            borderColor: $color("black") // 设置边框颜色为黑色
+          },
+          layout: function(make, view) {
+            make.top.equalTo(view.prev.bottom).offset(10);
+            make.left.equalTo($("imgs1").right).offset(5);
+            make.size.equalTo($size(200, 400));
+          }
+        },
+      {
+            type: "button",
+            props: {
+              id: "button1",
+              title: "重新脱衣",
+              bgcolor: $color("lightGray"),
+              titleColor: $color("white"),
+              radius: 10
+            },
+            layout: function(make, view) {
+              make.top.equalTo($("imgs1").bottom).offset(50);
+              make.centerX.equalTo($("imgs1").centerX);
+              make.size.equalTo($size(120, 50));
+            },
+            events: {
+              tapped: function() {
+                
+                $ui.toast("重新脱衣♻️");
+                $("imgs2").src = [];//清空脱衣后的图片
+                $("aijiazaitis").text = "重新脱衣...";
+                
+                aichuli ();
+              }
+            }
+          },
+          {
+            type: "button",
+            props: {
+              id: "button2",
+              title: "下载脱衣图片",
+              bgcolor: $color("lightGray"),
+              titleColor: $color("white"),
+              radius: 10
+            },
+            layout: function(make, view) {
+              make.top.equalTo($("imgs2").bottom).offset(50);
+              make.centerX.equalTo($("imgs2").centerX);
+              make.size.equalTo($size(120, 50));
+            },
+            events: {
+              tapped: function() {
+                $ui.toast("下载脱衣图片⏬");
+                var base64Image = $("imgs2").src;
+                      // 去掉"data:image/png;base64,"前缀
+                      var base64Data = base64Image.replace(/^data:image\/\w+;base64,/, "");
+                      // 将base64编码转换为图像
+                      var image = $data({"base64": base64Data}).image;
+                      // 保存图像到相册
+                      $photo.save({
+                        image: image,
+                        handler: function(success) {
+                          if (success) {
+                            $ui.toast("图片成功保存至相册。");
+                          } else {
+                            $ui.toast("图片保存至相册失败。");
+                          }
+                        }
+                      });
+                      //
+              }
+            }
+          }
+  ]
+});
+$("imgs1").src = imgdatas1;
+
+
+function postData(imgid) {
+  $http.post({
+    url: "https://101.43.71.220:15002/api/Task/get_tasks_drop",
+    header: MYheaders2,
+    body: { "task_id": imgid },
+    handler: function(resp) {
+      console.log("Image URL: " + JSON.stringify(resp.data));
+      
+      var image_url = resp.data.data.image_url;
+      var status = resp.data.data.status
+      if (status == "0") {
+        $("aijiazaitis").text = "图片脱衣失败⚠️";
+      }else{
+      
+      if (!image_url) {
+        // 如果image_url没有数据，再次请求
+        // 如果image_url没有数据，等待2秒后再次请求
+        setTimeout(function() {
+                    postData(imgid);
+                  }, 4000);
+                  $("aijiazaitis").text = "正在处理中...";
+      } else {
+        // 如果image_url有数据，执行其他操作
+        $("aijiazaitis").text = "即将完成...";
+        var retryCount = 0;//重置计算器
+        console.log("Image URL: " + image_url);
+        //
+$http.get({
+        url: image_url,
+    handler: function(resp) {
+        var encryptedData = $text.base64Encode(resp.data);
+        var decryptedData = decrypt(encryptedData);
+        var datas =
+        "data:image/png;base64," + decryptedData;
+        //$("imgs1").src =datas.imgs.src;
+        $("imgs2").src =datas;
+        
+        console.log("返回数据"+decryptedData);
+    }
+    
+});        
+        
+        //
+        
+      }}
+    }
+  });
+}
+
+function aichuli () {
+  $("aijiazaitis").text = "Ai即将处理..."
+console.log("返回链接"+url);
+$http.post({
+  url: "https://101.43.71.220:15002/api/Task/add_task_drop",
+  header: MYheaders2,
+  body: { "face_url": url },
+  handler: function(resp) {
+    console.log("返回数据"+resp.data);
+    var imgid = resp.data.data;
+    postData(imgid);
+    console.log("返回数据"+imgid);
+  }
+});
+}
+aichuli ();
+}
+}
+
+
 //启动加载界面
 function zhongcheLoading() {
 $ui.render({
@@ -856,7 +1235,7 @@ $ui.render({
          type: "label",
          props: {
            id: "beizhu",
-           text: "by:中车大神\n\n\n宗旨:看不过来没关系，但必须拥有!\n\n仅供学习禁止倒卖\n\n更新日期：2023-09-20",
+           text: "by:中车大神\n\n\n宗旨:看不过来没关系，但必须拥有!\n\n仅供学习禁止倒卖\n\n更新日期：2023-09-21",
            align: $align.center,
            textColor:$color("#8496B8"),
            font: $font(14),
