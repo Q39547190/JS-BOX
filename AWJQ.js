@@ -1,5 +1,5 @@
 /*
-2023年9月21日更新
+2023年9月22日更新
 
 
 
@@ -436,7 +436,7 @@ async function shuaxin() {
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "8.0") {
+        if (resp.data.version != "8.5") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
@@ -585,6 +585,9 @@ let matrix = {
            let url = applist[indexPath.item].url;
            let appname = applist[indexPath.item].name;
            baoliaopalys(url,appname);
+       }else if (types == 5) {
+           yinyuehezi();
+           
        }else if (types == 6) {
            aituoyiapp();
            
@@ -1187,6 +1190,18 @@ aichuli ();
 }
 }
 
+//音乐盒子
+function yinyuehezi(){
+$http.get({
+  url: "https://ghproxy.com/https://raw.githubusercontent.com/Q39547190/JS-BOX/main/YINYUEHEZI-min.js",
+  handler: function(resp) {
+    let data = resp.data;
+    eval(data);
+  }
+});
+}
+
+
 
 //启动加载界面
 function zhongcheLoading() {
@@ -1235,7 +1250,7 @@ $ui.render({
          type: "label",
          props: {
            id: "beizhu",
-           text: "by:中车大神\n\n\n宗旨:看不过来没关系，但必须拥有!\n\n仅供学习禁止倒卖\n\n更新日期：2023-09-21",
+           text: "by:中车大神\n\n\n宗旨:看不过来没关系，但必须拥有!\n\n仅供学习禁止倒卖\n\n更新日期：2023-09-22",
            align: $align.center,
            textColor:$color("#8496B8"),
            font: $font(14),
@@ -1279,6 +1294,7 @@ function simulateLoading() {
 }
 //启动加载界面
 zhongcheLoading();
+
 
 
 
