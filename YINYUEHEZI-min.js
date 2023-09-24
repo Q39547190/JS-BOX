@@ -41,7 +41,7 @@ var urlt = 'https://kwapi-api-iobiovqpvk.cn-beijing.fcapp.run/search?key=';
 
 
 //var songData = $cache.get("songData");
-$ui.render({
+$ui.push({
   props: {
     title: "中车音乐🎵盒子"
   },
