@@ -303,11 +303,51 @@ createPopupView(datas);
             }
           }
         },
+        //随机循环切换按钮
+        {
+                  type: "button",
+                  props: {
+                    id: "bofangmoshi",
+                    title: "🔁循环模式",
+                    titleColor: $color("#000"),
+                    bgcolor: $color("clear"),
+                    font: $font(19)
+                  },
+                  layout: function(make, view) {
+                    make.bottom.equalTo($("slider").top).offset(-60);
+                    //make.centerX.equalTo(view.super);
+                    make.left.equalTo(230);
+                  },
+                  events: {
+                    tapped: function(sender) {
+                      
+                      // 切换播放/暂停
+                      //播放歌曲样品
+                      
+                              // 切换播放/暂停
+         if (sender.title == "🔁循环模式") {
+                                  $("bofangmoshi").title = "🔀随机模式";
+   $ui.toast("随机模式已开启✅");                               
+                                                           
+                              } else {
+                                  $("bofangmoshi").title = "🔁循环模式";                                                    
+   $ui.toast("循环模式已开启☑️");                               
+                                                            
+                              }
+
+                                                      
+        
+                                  
+                      
+                                  //...
+                    }
+                  }
+                },
         //收藏按钮
         {
                   type: "button",
                   props: {
-                    id: "previous",
+                    id: "previous2",
                     title: "👁‍🗨",
                     titleColor: $color("#000"),
                     bgcolor: $color("clear"),
@@ -696,7 +736,7 @@ function download2(url, name,artist,xuanze) {
 async function get_updata() {
     const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL1lJTllVRUhFWkktZ3guanNvbg=="));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "4.0") {
+        if (resp.data.version != "4.5") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
@@ -1222,24 +1262,36 @@ console.log("歌曲链接"+JSON.stringify(songgeqv))
   
 }
 
+
+
 function playNext() {
   //载入歌曲缓存
-    var data = shoucangdeqv(); // 调用shoucangdeqv函数并获取返回的data变量
-  currentIndex++;
-  if (currentIndex >= data.length) {
-    currentIndex = 0; // 如果已经到了最后一首歌，那么重新开始
-  }
-  playSong(currentIndex);
+      var data = shoucangdeqv(); // 调用shoucangdeqv函数并获取返回的data变量
+    if ($("bofangmoshi").title === "🔀随机模式") {
+        currentIndex = Math.floor(Math.random() * data.length); // 选择一个随机的索引
+    } else if ($("bofangmoshi").title === "🔁循环模式") {
+        currentIndex++;
+        if (currentIndex >= data.length) {
+            currentIndex = 0; // 如果已经到了最后一首歌，那么重新开始
+        }
+    }
+    playSong(currentIndex);
 }
 
 function playPrevious() {
   //载入歌曲缓存
-    var data = shoucangdeqv(); // 调用shoucangdeqv函数并获取返回的data变量
-  currentIndex--;
-  if (currentIndex < 0) {
-    currentIndex = data.length - 1;
-  }
-  playSong(currentIndex);
+      var data = shoucangdeqv(); // 调用shoucangdeqv函数并获取返回的data变量
+    if ($("bofangmoshi").title === "🔀随机模式") {
+        currentIndex = Math.floor(Math.random() * data.length); // 选择一个随机的索引
+    } else if ($("bofangmoshi").title === "🔁循环模式") {
+        currentIndex--;
+        if (currentIndex < 0) {
+            currentIndex = data.length - 1;
+        }
+    }
+    playSong(currentIndex);
 }
+
+$app.idleTimerDisabled = true
 
 
