@@ -1,11 +1,11 @@
 /*
-2023年9月22日更新
+2023年10月8日更新
 
 
 
 by：中车大神🚄
 */
-
+var isRefreshing = false;
 
 // 声明一个对象myHeaders，包含一个User-Agent字段，用于在HTTP请求中标识客户端信息
 var myHeaders = {
@@ -15,6 +15,14 @@ var myHeaders = {
     "Content-Type" : "application/json"
 };
 
+var myHeaders2 = {
+    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/117.0.5938.117 Mobile/15E148 Safari/604.1",
+    "Referer" : "https://www.lzltool.com/AES",
+    
+    "Content-Type" : "application/json",
+    "X-Requested-With" : "XMLHttpRequest",
+    "RequestSignature" : getCurrentTimestamp()
+};
 // 使用$text模块的base64Decode方法解码字符串，将结果赋值给urlt变量
 var urlt = $text.base64Decode("aHR0cHM6Ly9qaWVrb3UuYXBpc2FwaXMueHl6OjE4ODgvYXBpL3ZpZGVvL2xpc3Q/dmVyc2lvbj0xLjEuMQ==");
 var urlt2 = $text.base64Decode("aHR0cHM6Ly9qaWVrb3UuYXBpc2FwaXMueHl6OjE4ODgvYXBpL3ZpZGVvL3BsYXk/dmVyc2lvbj0xLjEuMQ==");
@@ -47,32 +55,36 @@ $cache.set("AESiv",iv);
 }                
                 
 //请求app
-function appdata() {
-  return new Promise((resolve, reject) => {
-    var platform_id = $cache.get("platform_id");
-    $http.post({
-      url:urlt,
-      header: myHeaders,
-      body:{"page":1,"limit":1,"platform_id":platform_id},
-      handler: function (resp) {
-        $ui.loading(false);
-        if (resp.error) {
-          reject(resp.error);
-        } else {
-          var  channelList = resp.data.data.video_category;
-          $cache.set("channelList",channelList);
-          //console.log(channelList);
-          resolve(channelList);
-        }
-      }
-    });
-  });
-}             
+//function appdata() {
+//    return new Promise((resolve, reject) => {
+//        var platform_id = $cache.get("platform_id");
+//        $http.post({
+//            url: urlt,
+//            header: myHeaders,
+//            body: {
+//                "page": 1,
+//                "limit": 1,
+//                "platform_id": platform_id
+//            },
+//            handler: function(resp) {
+//                $ui.loading(false);
+//                if (resp.error) {
+//                    reject(resp.error);
+//                } else {
+//                    var channelList = resp.data.data.video_category;
+//                    console.log("请求速度");
+//                    $cache.set("channelList",channelList)
+//                     resolve(channelList);
+//                }
+//            }
+//        });
+//    });
+//}   
 
 
 // 调用ui模块的render方法来渲染界面
 function jiemian() {
-  var channelList = $cache.get("channelList")
+//  var channelList = $cache.get("channelList")
   var appname = $cache.get("appname");
 $ui.push({
     props: {
@@ -111,8 +123,9 @@ $ui.push({
                 // 设置菜单的id
                 id:"menu",
                 // 通过映射channelList数组来创建菜单项
-                items:channelList.map(function(item){return item.title}),
-            },
+                items:[],
+                },
+                
             layout:function(make){
                 // 设置菜单的布局，位于输入框的下方，占据全宽，高度为50
                 make.left.right.equalTo(0);
@@ -123,9 +136,12 @@ $ui.push({
                 // 当选择菜单项时触发
                 changed:function(sender){
                     // 将所选菜单项的id存入缓存
+      console.log("选择菜单:"+JSON.stringify(sender.data));
+       var channelList = $cache.get("channelList")               
 var obj = channelList[sender.index].category_id;                    
                     
  var output = {"category_id": obj };
+ console.log("菜单:"+output);
                   
                      
   var channelLists = JSON.stringify(output);
@@ -191,10 +207,17 @@ var obj = channelList[sender.index].category_id;
         },
         didReachBottom: function(sender) {
             sender.endFetchingMore();
-            var page = $cache.get("pg") + 1;
-            $cache.set("pg", page);
-            shuaxin();
-            $ui.loading(true);
+            
+//            $ui.loading(true);
+//            shuaxin();
+    if (!isRefreshing) {
+        $ui.loading(true);
+        isRefreshing = true;  // 在调用shuaxin()之前将标记设置为true
+        var page = $cache.get("pg") + 1;
+                    $cache.set("pg", page);
+        shuaxin();
+    }
+            
         },
         didLongPress: function(sender, indexPath, data) {
               // 获取已保存的数据
@@ -305,6 +328,9 @@ function shoucangJM(){
   
   $("matrix").data = shoucang;
   //console.log("收藏" + JSON.stringify(shoucang));
+  //菜单
+     
+  //
 
 }
 
@@ -313,6 +339,7 @@ function shoucangJM(){
 
 async function getdata() {
   try {
+    $ui.loading(true);  
     var AES_encryptionMode = $cache.get("AES_encryptionMode");
     var key = $cache.get("ASEkey");
     var iv = $cache.get("AESiv");
@@ -339,24 +366,103 @@ async function getdata() {
           let data;
           if (image_type == 0) {
             data = { img: { src: dli.image }, pm: { text: dli.title }, url: dli.video_id };
+            $("Video").insert({ indexPath: $indexPath(0, $("Video").data.length), value: data });
           } else {
-            let base64Data = $text.base64Encode(resp.data);
-            //AES_encryptionMode是变量名必须[]动态获取
-            let imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode[AES_encryptionMode], padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
-            data = { img: { src: "data:image/png;base64," + imagebase }, pm: { text: dli.title }, url: dli.video_id };
+            var base64Data = $text.base64Encode(resp.data);
+                        //console.log(base64Data);
+                        var size = base64Size(base64Data);
+
+                                    console.log(dli.title+"前图片大小"+size/1024);
+
+if (size > 270 * 1024) { // 380KB = 380 * 1024 bytes
+    $thread.background({
+      //delay: 2,
+      handler: function() {
+        // 执行解密操作
+        let imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode[AES_encryptionMode], padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
+    
+        $thread.background({
+          //delay: 2.1,
+          handler: function() {
+            // 更新 UI
+            let imgData = $data({"base64": imagebase});
+                                       let img = $image(imgData);
+                                        //const resized = img.resized($size(400, 250));
+                                        let compressedImgData = img.jpg(0.1);
+                                        // 转换为Base64
+                                        let compressedBase64Image = $text.base64Encode(compressedImgData);
+                      var size = base64Size(compressedBase64Image);
+            let data = { img: { src: "data:image/png;base64,"+compressedBase64Image  }, pm: { text: dli.title }, url: dli.video_id };
+            $("Video").insert({ indexPath: $indexPath(0, $("Video").data.length), value: data });
           }
-          $("Video").insert({ indexPath: $indexPath(0, $("Video").data.length), value: data });
+        });
+      }
+    });
+} else {
+    $http.post({
+        url: "https://www.lzltool.com/Encrypt/AesDecrypt",
+        header: myHeaders2,
+        body: {
+            "Content":base64Data,
+            "Encoding":"utf-8",
+            "PrivateKey":"f5d965df75336270",
+            "Iv":"97b60394abc2fbe1",
+            "InputDataType":"Text",
+            "PaddingMode":"PKCS7",
+            "CipherMode":"CBC",
+            "OutputDataType":"Base64",
+            "KeyIvDataType":"Text"
+        },
+        handler: function(resp) {
+            if (resp.error) {
+                reject(resp.error);
+            } else {
+                var base64String = resp.data.Data;
+//let imgData = $data({"base64": base64String});
+//                            let img = $image(imgData);
+//                            const resized = img.resized($size(800, 400));
+//                            let compressedImgData = resized.jpg(0.1);
+                               
+                            
+                            // 转换为Base64
+//                            let compressedBase64Image = $text.base64Encode(compressedImgData);
+          var size = base64Size(base64String);
+          
+                                              console.log(dli.title+"图片大小"+size/1024+"KB");                  
+                data = { img: { src: "data:image/png;base64,"+base64String}, pm: { text: dli.title }, url: dli.video_id };
+                $("Video").insert({ indexPath: $indexPath(0, $("Video").data.length), value: data });
+            }
+        }
+    });
+}
+
+
+          }
+          
         }
       });
     }
     $("Video").endRefreshing();
+    isRefreshing = false;
   } catch (err) {
     console.error(err);
     $("Video").endRefreshing();
   }
+  $ui.loading(false);  
 }
 
 //这段代码的不同之处在于，我们没有等待所有的图片请求都完成后再更新视图，而是在每次图片请求完成时就立即更新视图。这样，用户可以更早地看到结果。
+//计算大小
+function base64Size(base64Data) {
+    var length = base64Data.length;
+    return Math.ceil((length / 4) * 3);
+}
+//时间
+function getCurrentTimestamp() {
+    var date = new Date();
+    var timestamp = Math.floor(date.getTime() / 1000);
+    return timestamp;
+}
 
 
 
@@ -432,91 +538,7 @@ async function shuaxin() {
 }
 
 
-//自动更新
-async function get_updata() {
-    const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
-    if(resp.response.statusCode === 200){
-        if (resp.data.version != "8.5") {
-            $ui.alert({
-                title: "发现新版本 - " + resp.data.version,
-                message: resp.data.upexplain,
-                actions: [
-                    {
-                        title: "立即更新",
-                        handler: function () {
-                            download(resp.data.updata,resp.data.name)
-                        }
-                    }, {
-                        title: "取消"
-                    }
-                ]
 
-            });
-            
-        }else{
-          let today = new Date().toLocaleDateString();
-          console.log (today);
-          let key = "dismissedAt";
-          
-          let dismissedAt = $cache.get(key);
-          
-          
-          if (dismissedAt != today) {
-            $ui.alert({
-              title: "公告",
-              message: resp.data.Bulletin,
-              actions: [
-                {
-                  title: "进入软件",
-                  handler: function() {
-                    // 在这里添加进入软件的代码
-                  }
-                },
-                {
-                  title: "今天不再提示",
-                  handler: function() {
-                    $cache.set(key, today);
-                  }
-                }
-              ]
-            });
-          }
-          //..
-        
-        }
-        //..
-    }
-}
-
-
-function download(url,name) {
-    $ui.toast("正在安装中 ...");
-    $http.download({
-        url: url,
-        handler: function (resp) {
-            $addin.save({
-                name: name,
-                data: resp.data,
-                handler: function () {
-                    $ui.alert({
-                        title: "安装完成",
-                        message: "\n是否打开？\n" + name,
-                        actions: [
-                            {
-                                title: "打开",
-                                handler: function () {
-                                    $app.openExtension(name)
-                                }
-                            },
-                            {
-                                title: "不了"
-                            }]
-                    });
-                }
-            })
-        }
-    })
-}
 
 //分割线***************
 //启动界面
@@ -600,24 +622,66 @@ let matrix = {
           let image_type = applist[indexPath.item].image_type;
           $cache.set("image_type", image_type);
           suanfa();
-          async function main() {
-              try {
-                  var channelList = await appdata();
-                  var obj = channelList[0].category_id;
-                  var output = {"category_id": obj};
-                  var channelLists = JSON.stringify(output);
-                  $cache.set("type", channelLists);
-                  $cache.set("pg", 1);
-                  //启动app界面
-                  jiemian();
-                  //启动获取界面数据
-                  shuaxin();
-                  
-              } catch (error) {
-                  console.error(error);
-              }
-          }
-          main();
+          jiemian();
+          //
+                    async function main() {
+          var platform_id = $cache.get("platform_id");
+                  $http.post({
+                      url: urlt,
+                      header: myHeaders,
+                      body: {
+                          "page": 1,
+                          "limit": 1,
+                          "platform_id": platform_id
+                      },
+                      handler: function(resp) {
+                          $ui.loading(false);
+                          if (resp.error) {
+                              reject(resp.error);
+                          } else {
+                              var channelList = resp.data.data.video_category;
+                              $cache.set("channelList",channelList)
+                              console.log("请求速度");
+          $ui.loading(true);
+                            
+                                
+                            
+                                // 使用 $("menu") 来获取 menu 元素，并使用 .items 来更新其值
+                                $("menu").data =channelList 
+                                $("menu").items = channelList.map(function (item) {
+                                    return item.title;
+                                });
+                            
+                                // 关闭加载指示器
+                                $ui.loading(false);                        
+                              
+                               //resolve(channelList);
+                          }
+                      }
+                  });            
+                        
+                
+                            //var channelList = await appdata();
+          // 开始加载指示器
+                                              
+                               
+                            
+                        
+                    }
+                    main();
+                    //
+                    
+                                      var output = {"category_id": ""};
+                                      var channelLists = JSON.stringify(output);
+                                      console.log(channelLists);
+                                      $cache.set("type", channelLists);
+                                      $cache.set("pg", 1);
+                    //                  //启动app界面
+                                      //jiemian();
+                                      //启动获取界面数据
+                                      shuaxin();
+                    
+          
       }
       //
     },
@@ -650,6 +714,92 @@ $http.get({
 });
 //启动更新函数
 get_updata()
+}
+
+//自动更新
+async function get_updata() {
+    const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
+    if(resp.response.statusCode === 200){
+        if (resp.data.version != "9.0") {
+            $ui.alert({
+                title: "发现新版本 - " + resp.data.version,
+                message: resp.data.upexplain,
+                actions: [
+                    {
+                        title: "立即更新",
+                        handler: function () {
+                            download(resp.data.updata,resp.data.name)
+                        }
+                    }, {
+                        title: "取消"
+                    }
+                ]
+
+            });
+            
+        }else{
+          let today = new Date().toLocaleDateString();
+          console.log (today);
+          let key = "dismissedAt";
+          
+          let dismissedAt = $cache.get(key);
+          
+          
+          if (dismissedAt != today) {
+            $ui.alert({
+              title: "公告",
+              message: resp.data.Bulletin,
+              actions: [
+                {
+                  title: "进入软件",
+                  handler: function() {
+                    // 在这里添加进入软件的代码
+                  }
+                },
+                {
+                  title: "今天不再提示",
+                  handler: function() {
+                    $cache.set(key, today);
+                  }
+                }
+              ]
+            });
+          }
+          //..
+        
+        }
+        //..
+    }
+}
+
+
+function download(url,name) {
+    $ui.toast("正在安装中 ...");
+    $http.download({
+        url: url,
+        handler: function (resp) {
+            $addin.save({
+                name: name,
+                data: resp.data,
+                handler: function () {
+                    $ui.alert({
+                        title: "安装完成",
+                        message: "\n是否打开？\n" + name,
+                        actions: [
+                            {
+                                title: "打开",
+                                handler: function () {
+                                    $app.openExtension(name)
+                                }
+                            },
+                            {
+                                title: "不了"
+                            }]
+                    });
+                }
+            })
+        }
+    })
 }
 
 
@@ -1250,7 +1400,7 @@ $ui.render({
          type: "label",
          props: {
            id: "beizhu",
-           text: "by:中车大神\n\n\n宗旨:看不过来没关系，但必须拥有!\n\n仅供学习禁止倒卖\n\n更新日期：2023-09-22",
+           text: "by:中车大神\n\n\n宗旨:看不过来没关系，但必须拥有!\n\n仅供学习禁止倒卖\n\n更新日期：2023-10-8",
            align: $align.center,
            textColor:$color("#8496B8"),
            font: $font(14),
@@ -1289,11 +1439,13 @@ function simulateLoading() {
         progressView.value = progress;
       }
     });
-  }, 250);
+  }, 50);
 
 }
 //启动加载界面
 zhongcheLoading();
+
+
 
 
 
