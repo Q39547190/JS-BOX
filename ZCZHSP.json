@@ -235,12 +235,17 @@
         "name" : "⬇️***",
         "type" : "0"
       },
+     {
+        "platform_id" : "0",
+        "pic_url" : "",
+        "name" : "********",
+        "type" : "0"
+      },
       {
         "platform_id" : "0",
         "pic_url" : "http://66.42.49.171:16666/static/picture/1.jpg",
         "name" : "AI脱衣",
         "type" : "6"
-      },
+      }
     ]
 }
-
