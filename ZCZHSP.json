@@ -77,25 +77,25 @@
         "platform_id" : "19",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/096c46ee-9f0c-4927-be8d-cd2bc29a82ae.png",
         "name" : "私房KTV",
-        "image_type" : "2"
+        "image_type" : "0"
       },
       {
         "platform_id" : "18",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/a82499db-61ef-40e2-aca4-86990629654a.png",
         "name" : "暗网禁区\n(慎入)",
-        "image_type" : "2"
+        "image_type" : "0"
       },
       {
         "platform_id" : "17",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/06312106-dbfb-4f2d-aaae-d217dd637318.png",
         "name" : "海角社区",
-        "image_type" : "2"
+        "image_type" : "0"
       },
       {
         "platform_id" : "16",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/fcefefa0-6289-4925-aee9-096c0bd13a53.png",
         "name" : "91视频",
-        "image_type" : "2"
+        "image_type" : "0"
       },
       {
         "platform_id" : "13",
@@ -125,61 +125,61 @@
         "platform_id" : "29",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/3dfee4f3-c8be-4013-a65a-9497703fa13a.png",
         "name" : "微密圈",
-        "image_type" : "2"
+        "image_type" : "0"
       },
       {
         "platform_id" : "28",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/f5faddc1-bdc6-40a5-8342-58411649e790.png",
         "name" : "51萝莉",
-        "image_type" : "2"
+        "image_type" : "0"
       },
       {
         "platform_id" : "27",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/8ba41f84-17eb-4a9d-a1a5-38454dceaa10.png",
         "name" : "杏吧论坛",
-        "image_type" : "2"
+        "image_type" : "0"
       },
       {
         "platform_id" : "26",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/b859fd18-2583-473b-b4e1-cb5743a60a42.png",
         "name" : "成人B站",
-        "image_type" : "2"
+        "image_type" : "0"
       },
       {
         "platform_id" : "25",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/2fae3513-8e48-40f0-a536-34edc287d115.png",
         "name" : "天涯论坛",
-        "image_type" : "2"
+        "image_type" : "0"
       },
       {
         "platform_id" : "24",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/a5029065-0be6-43a5-b82e-def79279adb3.png",
         "name" : "鲁先生",
-        "image_type" : "2"
+        "image_type" : "0"
       },
       {
         "platform_id" : "23",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/ab80595b-60ea-4e9b-a1e4-03014abb9851.png",
         "name" : "50度灰",
-        "image_type" : "2"
+        "image_type" : "0"
       },
       {
         "platform_id" : "22",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/efbf351e-8a8c-4efb-9af7-65aa17092729.png",
         "name" : "汤头条",
-        "image_type" : "2"
+        "image_type" : "0"
       },
       {
         "platform_id" : "3",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/28b3836a-b3f7-4763-81a4-0196d6a43091.png",
         "name" : "丝瓜视频",
-        "image_type" : "2"
+        "image_type" : "0"
       },
       {
         "platform_id" : "4",
         "pic_url" : "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/25ea1d1b-ab55-49dd-8002-a69377b84b3b.png",
         "name" : "草莓视频",
-        "image_type" : "2"
+        "image_type" : "0"
       },
      {
         "platform_id" : "20",
