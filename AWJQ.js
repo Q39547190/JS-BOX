@@ -1,5 +1,5 @@
 /*
-2023年10月8日更新
+2023年11月27日更新
 
 
 
@@ -339,11 +339,6 @@ function shoucangJM(){
 
 async function getdata() {
   try {
-    $ui.loading(true);  
-    var AES_encryptionMode = $cache.get("AES_encryptionMode");
-    var key = $cache.get("ASEkey");
-    var iv = $cache.get("AESiv");
-    console.log("算法模式"+AES_encryptionMode)
     var platform_id = $cache.get("platform_id", platform_id);
     var image_type = $cache.get("image_type");
     var page = $cache.get("pg");
@@ -359,104 +354,32 @@ async function getdata() {
     $ui.loading(false);
     let li = resp.data.data.list;
     for (let dli of li) {
-      $http.get({ url: dli.image }).then(async (resp) => {
+      $http.download({ url: dli.image }).then(async (resp) => {
         if (resp.error) {
           throw resp.error;
         } else {
           let data;
           if (image_type == 0) {
             data = { img: { src: dli.image }, pm: { text: dli.title }, url: dli.video_id };
-            $("Video").insert({ indexPath: $indexPath(0, $("Video").data.length), value: data });
           } else {
-            var base64Data = $text.base64Encode(resp.data);
-                        //console.log(base64Data);
-                        var size = base64Size(base64Data);
-
-                                    console.log(dli.title+"前图片大小"+size/1024);
-
-if (size > 270 * 1024) { // 380KB = 380 * 1024 bytes
-    $thread.background({
-      //delay: 2,
-      handler: function() {
-        // 执行解密操作
-        let imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode[AES_encryptionMode], padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
-    
-        $thread.background({
-          //delay: 2.1,
-          handler: function() {
-            // 更新 UI
-            let imgData = $data({"base64": imagebase});
-                                       let img = $image(imgData);
-                                        //const resized = img.resized($size(400, 250));
-                                        let compressedImgData = img.jpg(0.1);
-                                        // 转换为Base64
-                                        let compressedBase64Image = $text.base64Encode(compressedImgData);
-                      var size = base64Size(compressedBase64Image);
-            let data = { img: { src: "data:image/png;base64,"+compressedBase64Image  }, pm: { text: dli.title }, url: dli.video_id };
-            $("Video").insert({ indexPath: $indexPath(0, $("Video").data.length), value: data });
+            //var base64Data = blob(resp.data);
+            let base64Data = $text.base64Encode(resp.data);
+                                                  console.log(dli.title+"链接"+dli.image+"图片");
+            //let imagebase = CryptoJS.AES.decrypt(base64Data, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Base64);
+            data = { img: { src: "data:image/png;base64," + base64Data }, pm: { text: dli.title }, url: dli.video_id };
           }
-        });
-      }
-    });
-} else {
-    $http.post({
-        url: "https://www.lzltool.com/Encrypt/AesDecrypt",
-        header: myHeaders2,
-        body: {
-            "Content":base64Data,
-            "Encoding":"utf-8",
-            "PrivateKey":"f5d965df75336270",
-            "Iv":"97b60394abc2fbe1",
-            "InputDataType":"Text",
-            "PaddingMode":"PKCS7",
-            "CipherMode":"CBC",
-            "OutputDataType":"Base64",
-            "KeyIvDataType":"Text"
-        },
-        handler: function(resp) {
-            if (resp.error) {
-                reject(resp.error);
-            } else {
-                var base64String = resp.data.Data;
-//let imgData = $data({"base64": base64String});
-//                            let img = $image(imgData);
-//                            const resized = img.resized($size(800, 400));
-//                            let compressedImgData = resized.jpg(0.1);
-                               
-                            
-                            // 转换为Base64
-//                            let compressedBase64Image = $text.base64Encode(compressedImgData);
-          var size = base64Size(base64String);
-          
-                                              console.log(dli.title+"图片大小"+size/1024+"KB");                  
-                data = { img: { src: "data:image/png;base64,"+base64String}, pm: { text: dli.title }, url: dli.video_id };
-                $("Video").insert({ indexPath: $indexPath(0, $("Video").data.length), value: data });
-            }
-        }
-    });
-}
-
-
-          }
-          
+          $("Video").insert({ indexPath: $indexPath(0, $("Video").data.length), value: data });
         }
       });
     }
     $("Video").endRefreshing();
-    isRefreshing = false;
+        isRefreshing = false;
   } catch (err) {
     console.error(err);
     $("Video").endRefreshing();
   }
-  $ui.loading(false);  
 }
 
-//这段代码的不同之处在于，我们没有等待所有的图片请求都完成后再更新视图，而是在每次图片请求完成时就立即更新视图。这样，用户可以更早地看到结果。
-//计算大小
-function base64Size(base64Data) {
-    var length = base64Data.length;
-    return Math.ceil((length / 4) * 3);
-}
 //时间
 function getCurrentTimestamp() {
     var date = new Date();
@@ -698,7 +621,7 @@ $ui.render({
 
 // 获取应用列表
 $http.get({
-  url: "https://ghproxy.com/https://raw.githubusercontent.com/Q39547190/JS-BOX/main/ZCZHSP.json",
+  url: "https://ghps.cc/https://raw.githubusercontent.com/Q39547190/JS-BOX/main/ZCZHSP.json",
   handler: function(resp) {
     applist = resp.data.applist;
     $cache.set("applist", applist);
@@ -718,9 +641,9 @@ get_updata()
 
 //自动更新
 async function get_updata() {
-    const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHByb3h5LmNvbS9odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vUTM5NTQ3MTkwL0pTLUJPWC9tYWluL0FXSlEtZ3guanNvbg=="));
+    const resp = await $http.get($text.base64Decode("aHR0cHM6Ly9naHBzLmNjL2h0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9RMzk1NDcxOTAvSlMtQk9YL21haW4vQVdKUS1neC5qc29u"));
     if(resp.response.statusCode === 200){
-        if (resp.data.version != "9.0") {
+        if (resp.data.version != "10.0") {
             $ui.alert({
                 title: "发现新版本 - " + resp.data.version,
                 message: resp.data.upexplain,
@@ -803,168 +726,6 @@ function download(url,name) {
 }
 
 
-//楼凤网页
-function loufengplays(url,appname) {
-    $ui.push({
-        props: {
-            title: appname
-        },
-        views: [{
-            type: "web",
-            props: {
-                id: "webview",
-                url: url
-            },
-            layout: $layout.fill
-        }]
-    });
-}
-//视频网页
-function shipinplays(url,appname) {
-$ui.push({
-    props: {
-        title: appname,
-        bgcolor: $color("#9C64A7")//背景颜色
-    },
-    views: [{
-        type: "label",
-        props: {
-            text: "收藏的视频在右侧❤️按钮\n⬇️返回请点击下方'<'按钮      点击下方⭐️收藏视频",
-            textColor: $color("black"),
-            font: $font(19),
-            align: $align.left,
-            lines:2,
-            
-        },
-        layout: function(make, view) {
-            make.left.equalTo($("hb_img").right);
-                        make.centerY.equalTo($("hb_img"));
-        }
-    },{
-        type: "button",
-        props: {
-            id: "hb_img",
-            src: "https://icon-icons.com/downloadimage.php?id=79718&root=1128/ICO/512/&file=1486164750-love08_79718.ico"
-        },
-        events: {
-            tapped: function(sender) {
-                
-                //
-                shoucangpalys();
-            }
-        },
-        layout: function(make, view) {
-            make.top.inset(-5);
-            make.width.height.equalTo(60);
-            make.right.inset(20);
-        }
-    },
-      
-      {
-        type: "web",
-        props: {
-            id: "webview",
-            url: url,
-            script: `
-                var script = document.createElement('script');
-                script.src = 'https://h5.kdes.autos/static/js/pages-baoliao-baoliao~pages-baoliao-baoliaoDetail~pages-comics-comics~pages-comics-comicsView~pages-~b98920ef.19dbb9ca.js';
-                document.body.appendChild(script);
-            `
-        },
-        layout: function(make, view) {
-          make.top.inset(50);  // 将网页向下移动20个像素
-            make.width.equalTo($device.info.screen.width);
-            make.height.equalTo($device.info.screen.height - 200);//底部上拉
-make.top.equalTo($("hb_img").bottom).offset(0); // 使网页视图的顶部对齐按钮的底部，且中间留10个像素的间距            
-          }
-    },
-    
-    
-    ]
-});
-}
-
-
-//激活图片加载
-
-function jihuoplays(url,appname) {
-    $ui.push({
-    props: {
-        title: "请点依次击下方4个app等待加载图片"
-    },
-    views: [{
-        type: "web",
-        props: {
-            id: "webview",
-            url: url,
-            script: `
-            //js代码注入隐藏顶部
-                var style = document.createElement('style');
-                style.innerHTML = 'body { margin-top: -750px; }';
-                document.head.appendChild(style);
-            `
-        },
-        layout: function(make, view) {
-            make.width.equalTo($device.info.screen.width);
-        
-            make.height.equalTo($device.info.screen.height);
-            make.top.equalTo(0);
-        }
-    }]
-});
-}
-
-//网页收藏夹
-
-function shoucangpalys(url,appname) {
-    $ui.push({
-    props: {
-        title: "收藏夹2"
-    },
-    views: [{
-        type: "web",
-        props: {
-            id: "webview",
-            url: "https://h5.kdes.autos/#/pages/collect/collect",
-            script: `
-                var script = document.createElement('script');
-                script.src = 'https://h5.kdes.autos/static/js/pages-baoliao-baoliao~pages-baoliao-baoliaoDetail~pages-comics-comics~pages-comics-comicsView~pages-~b98920ef.19dbb9ca.js';
-                document.body.appendChild(script);
-            `
-        },
-        layout: function(make, view) {
-            make.width.equalTo($device.info.screen.width);
-//隐藏底部信息            
-            make.height.equalTo($device.info.screen.height - 0);
-          }
-    }]
-});
-}
-//51爆料界面
-function baoliaopalys(url,appname) {
-    $ui.push({
-    props: {
-        title: appname
-    },
-    views: [{
-        type: "web",
-        props: {
-            id: "webview",
-            url: url,
-            script: `
-                var script = document.createElement('script');
-                script.src = 'https://h5.kdes.autos/static/js/pages-baoliao-baoliao~pages-baoliao-baoliaoDetail~pages-comics-comics~pages-comics-comicsView~pages-~b98920ef.19dbb9ca.js';
-                document.body.appendChild(script);
-            `
-        },
-        layout: function(make, view) {
-            make.width.equalTo($device.info.screen.width);
-//隐藏底部信息            
-            make.height.equalTo($device.info.screen.height - 15);
-          }
-    }]
-});
-}
 
 //AI脱衣界面
 function aituoyiapp (){
@@ -1343,7 +1104,7 @@ aichuli ();
 //音乐盒子
 function yinyuehezi(){
 $http.get({
-  url: "https://ghproxy.com/https://raw.githubusercontent.com/Q39547190/JS-BOX/main/YINYUEHEZI-min.js",
+  url: "https://ghps.cc/https://raw.githubusercontent.com/Q39547190/JS-BOX/main/YINYUEHEZI-min.js",
   handler: function(resp) {
     let data = resp.data;
     eval(data);
@@ -1400,7 +1161,7 @@ $ui.render({
          type: "label",
          props: {
            id: "beizhu",
-           text: "by:中车大神\n\n\n宗旨:看不过来没关系，但必须拥有!\n\n仅供学习禁止倒卖\n\n更新日期：2023-10-8",
+           text: "by:中车大神\n\n\n宗旨:看不过来没关系，但必须拥有!\n\n仅供学习禁止倒卖\n\n更新日期：2023-11-27",
            align: $align.center,
            textColor:$color("#8496B8"),
            font: $font(14),
@@ -1444,10 +1205,3 @@ function simulateLoading() {
 }
 //启动加载界面
 zhongcheLoading();
-
-
-
-
-
-
-
