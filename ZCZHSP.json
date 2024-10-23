@@ -93,8 +93,8 @@
 		"type": "1"
 	}, {
 		"platform_id": "9",
-		"pic_url": "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/d43322da-8aae-499c-a4a1-01dca616d347.png",
-		"name": "吉星視頻",
+		"pic_url": "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/356243ee-f91d-4d52-8ef6-c4e1467cc7b0.png",
+		"name": "小兽视频",
 		"image_type": "0",
 		"type": "1"
 	}, {
@@ -146,9 +146,9 @@
 		"image_type": "0",
 		"type": "1"
 	}, {
-		"platform_id": "23",
-		"pic_url": "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/ab80595b-60ea-4e9b-a1e4-03014abb9851.png",
-		"name": "50度灰",
+		"platform_id": "11",
+		"pic_url": "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/317e741f-3982-4a4d-9bc3-a6a22fb6510c.png",
+		"name": "妻友\n(重口)",
 		"image_type": "0",
 		"type": "1"
 	}, {
@@ -158,27 +158,9 @@
 		"image_type": "0",
 		"type": "1"
 	}, {
-		"platform_id": "3",
-		"pic_url": "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/28b3836a-b3f7-4763-81a4-0196d6a43091.png",
-		"name": "丝瓜视频",
-		"image_type": "0",
-		"type": "1"
-	}, {
-		"platform_id": "4",
-		"pic_url": "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/25ea1d1b-ab55-49dd-8002-a69377b84b3b.png",
-		"name": "草莓视频",
-		"image_type": "0",
-		"type": "1"
-	}, {
-		"platform_id": "20",
-		"pic_url": "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/e6b0b74d-ece8-4dd5-8c7f-59baf15db482.png",
-		"name": "爱浪影视",
-		"image_type": "0",
-		"type": "1"
-	}, {
-		"platform_id": "15",
-		"pic_url": "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/ef38fa55-3798-41c1-804b-75e1d23dec64.png",
-		"name": "甜瓜视频",
+		"platform_id": "5",
+		"pic_url": "https://mp-3cf3ff86-055f-448a-a6d3-20be75077f0c.cdn.bspapp.com/cloudstorage/7e867d67-8226-4a58-9f32-cc083af6f4dd.png",
+		"name": "TikTok",
 		"image_type": "0",
 		"type": "1"
 	}, {
@@ -187,11 +169,6 @@
 		"name": "91AV",
 		"image_type": "0",
 		"type": "1"
-	}, {
-		"platform_id": "0",
-		"pic_url": "",
-		"name": "",
-		"type": "0"
 	}, {
 		"platform_id": "0",
 		"pic_url": "",
