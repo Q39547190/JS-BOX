@@ -681,6 +681,7 @@ function download(url, name) {
 		handler: function(resp) {
 			$addin.save({
 				name: name,
+				icon: "tram.fill",
 				data: resp.data,
 				handler: function() {
 					$ui.alert({
